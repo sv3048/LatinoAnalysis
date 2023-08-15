@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "melaHiggsEFT.C": "cpp",
+        "melaHiggsEFT copy.C": "cpp",
+        "melaHiggsEFT_OffShell.C": "cpp",
+        "GenVar.C": "cpp"
+    }
+}

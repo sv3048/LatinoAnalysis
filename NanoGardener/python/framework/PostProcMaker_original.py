@@ -318,21 +318,15 @@ class PostProcMaker():
      self._sourceDir = None
      if not self._iniStep == 'Prod' :
        self._sourceDir = self._Sites[self._LocalSite]['treeBaseDir']+'/'+iProd+'/'+self._iniStep+'/'
-    
+
 
      if not iStep == 'UEPS' :
-       
-       #self._targetDir = '/eos/cms/store/group/phys_higgs/cmshww/amassiro/HWWNano/'+iProd+'/' 
-       #self._targetDir = self._Sites[self._LocalSite]['treeBaseDir']+'/'+iProd+'/'
-       #self._targetDir = '/eos/user/t/tcarnaha/Summer_2022/HWW_Ntuples/'+iProd+'/'     ## commented this line to store in my area [ see next line ]
-       self._targetDir = '/eos/user/s/sverma/Summer_2022/HWW_Ntuples/'+iProd+'/'
 
-       #self._targetDir = self._Sites[self._LocalSite]['treeBaseDir']+'/'+iProd+'/'
+       self._targetDir = self._Sites[self._LocalSite]['treeBaseDir']+'/'+iProd+'/'
        if not self._iniStep == 'Prod' : self._targetDir += self._iniStep+'__'+iStep+'/'
        else                           : self._targetDir += iStep+'/'
        
        if self._Sites[self._LocalSite]['mkDir'] : os.system('mkdir -p '+ self._targetDir )
-
 
      # UEPS
      else:
@@ -479,14 +473,7 @@ class PostProcMaker():
         if not cpMode:
           command = 'xrdcp -f '+prodFile+' '+self._Sites[self._LocalSite]['xrootdPath']+storeFile
         else:
-          #command = 'xrdcp -f '+self._Sites[self._LocalSite]['xrootdPath']+prodFile+' '+self._Sites[self._LocalSite]['xrootdPath']+storeFile
-         
-          # READ from Taylor's and write on Taylor's: uncomment 'xrootduserPath_hww' : 'root://eosuser.cern.ch//eos/user/t/tcarnaha/Summer_2022/HWW_Ntuples/'  in Sites.py, and uncomment the following line
-          #command = 'xrdcp -f '+self._Sites[self._LocalSite]['xrootduserPath_hww']+prodFile+' '+self._Sites[self._LocalSite]['xrootduserPath']+storeFile
-          # READ from Taylor's and write on Sadhana's: uncomment 'xrootduserPath_hww' : 'root://eosuser.cern.ch//eos/user/t/tcarnaha/Summer_2022/HWW_Ntuples/'  in Sites.py, and uncomment the following line
-          command = 'xrdcp -f '+self._Sites[self._LocalSite]['xrootduserPath_hww']+prodFile+' '+self._Sites[self._LocalSite]['xrootduserPath']+storeFile
-
-          command
+          command = 'xrdcp -f '+self._Sites[self._LocalSite]['xrootdPath']+prodFile+' '+self._Sites[self._LocalSite]['xrootdPath']+storeFile
       # IFCA
       elif self._LocalSite == 'ifca' :
          if self._TargetSite == 'ifca' or self._TargetSite == None :

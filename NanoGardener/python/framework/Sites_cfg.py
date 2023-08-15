@@ -17,10 +17,14 @@ Sites = {
               'lsCmd'       : 'ls' ,
               'mkDir'       : True ,
               'xrootdPath'  : 'root://eoscms.cern.ch/' ,
-              'treeBaseDir' : '/eos/cms/store/group/phys_higgs/cmshww/amassiro/HWWNano/' ,
+              'xrootduserPath'  : 'root://eosuser.cern.ch/' ,
+              'xrootdPath_hww'  : 'root://eoscms.cern.ch//eos/cern.ch/t/tcarnaha/Summer_2022/HWW_Ntuples/' ,
+              #'treeBaseDir' : '/eos/cms/store/group/phys_higgs/cmshww/amassiro/HWWNano/' ,
               #'treeBaseDir' : '/eos/cms/store/group/phys_smp/ec/Latinos/HWWNano/',
-              'batchQueues' : ['8nh','1nd','2nd','1nw'],
-              'slc_ver'     : 7
+               #'treeBaseDir':'/eos/user/t/tcarnaha/Summer_2022/HWW_Ntuples/',
+               'treeBaseDir':'/eos/user/s/sverma/Summer_2022/HWW_Ntuples/',
+               'batchQueues' : ['8nh','1nd','2nd','1nw'],
+               'slc_ver'     : 7
            } ,
 
   'sdfarm' : {

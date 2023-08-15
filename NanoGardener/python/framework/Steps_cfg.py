@@ -3062,6 +3062,16 @@ Steps = {
                    'module'     : 'JJHEFT()',
                  },
 
+   # added JJHEFT block for Off Shell analysis purpose
+    'JJHEFT_OffShell' : {
+                   'isChain'    : False ,
+                   'do4MC'      : True ,
+                   'do4Data'    : True ,
+                   'import'     : 'LatinoAnalysis.NanoGardener.modules.JJH_EFTVars_OffShell' ,
+                   'declare'    : 'JJHEFT_OffShell = lambda : JJH_EFTVars_OffShell()',
+                   'module'     : 'JJHEFT_OffShell()',
+                 },
+   ######## 
     'JJHEFT_ElepTup' : {
                     'isChain'    : False ,
                     'do4MC'      : True  ,
