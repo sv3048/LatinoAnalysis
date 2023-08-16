@@ -18,7 +18,7 @@ Sites = {
               'mkDir'       : True ,
               'xrootdPath'  : 'root://eoscms.cern.ch/' ,
               'xrootduserPath'  : 'root://eosuser.cern.ch/' ,
-              'xrootdPath_hww'  : 'root://eoscms.cern.ch//eos/cern.ch/t/tcarnaha/Summer_2022/HWW_Ntuples/' ,
+              'xrootdPath_hww'  : 'root://eosuser.cern.ch//eos/cern.ch/t/tcarnaha/Summer_2022/HWW_Ntuples/' ,
               #'treeBaseDir' : '/eos/cms/store/group/phys_higgs/cmshww/amassiro/HWWNano/' ,
               #'treeBaseDir' : '/eos/cms/store/group/phys_smp/ec/Latinos/HWWNano/',
                #'treeBaseDir':'/eos/user/t/tcarnaha/Summer_2022/HWW_Ntuples/',

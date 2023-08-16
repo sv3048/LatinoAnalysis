@@ -486,7 +486,6 @@ class PostProcMaker():
           # READ from Taylor's and write on Sadhana's: uncomment 'xrootduserPath_hww' : 'root://eosuser.cern.ch//eos/user/t/tcarnaha/Summer_2022/HWW_Ntuples/'  in Sites.py, and uncomment the following line
           command = 'xrdcp -f '+self._Sites[self._LocalSite]['xrootduserPath_hww']+prodFile+' '+self._Sites[self._LocalSite]['xrootduserPath']+storeFile
 
-          command
       # IFCA
       elif self._LocalSite == 'ifca' :
          if self._TargetSite == 'ifca' or self._TargetSite == None :
