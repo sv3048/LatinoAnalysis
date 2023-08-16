@@ -1,4 +1,3 @@
-
 import ROOT
 import math 
 import ctypes
@@ -11,7 +10,7 @@ from LatinoAnalysis.NanoGardener.framework.BranchMapping import mappedOutputTree
 
 import os.path
 
-class JJH_EFTVars(Module):
+class JJH_EFTVars_OffShell(Module):
     def __init__(self, branch_map=''):
         
         self.cmssw_base = os.getenv('CMSSW_BASE')
@@ -23,9 +22,9 @@ class JJH_EFTVars(Module):
         ROOT.gSystem.Load(self.cmssw_base+"/src/JHUGenMELA/MELA/data/"+self.cmssw_arch+"/libmcfm_707.so")
 
         try:
-            ROOT.gROOT.LoadMacro(self.cmssw_base+'/src/LatinoAnalysis/Gardener/python/variables/melaHiggsEFT.C+g')
+            ROOT.gROOT.LoadMacro(self.cmssw_base+'/src/LatinoAnalysis/Gardener/python/variables/melaHiggsEFT_OffShell.C+g')
         except RuntimeError:
-            ROOT.gROOT.LoadMacro(self.cmssw_base+'/src/LatinoAnalysis/Gardener/python/variables/melaHiggsEFT.C++g')
+            ROOT.gROOT.LoadMacro(self.cmssw_base+'/src/LatinoAnalysis/Gardener/python/variables/melaHiggsEFT_OffShell.C++g')
       
         self.mela = ROOT.Mela(13, 125,  ROOT.TVar.SILENT) 
 

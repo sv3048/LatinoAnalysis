@@ -9,7 +9,7 @@
 #include <sys/types.h>
 #include <map>
 
-std::map<TString, float> melaHiggsEFT(Mela *_mela, TVar::MatrixElement ME, TVar::Production Prod, bool IsGG, bool IsReco){
+std::map<TString, float> melaHiggsEFT_OffShell(Mela *_mela, TVar::MatrixElement ME, TVar::Production Prod, bool IsGG, bool IsReco){
 
   std::map<TString, float> mes; 
 
