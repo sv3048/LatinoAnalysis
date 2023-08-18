@@ -18,13 +18,14 @@ class JJH_EFTVars_OffShell(Module):
 
         ROOT.gSystem.AddIncludePath("-I"+self.cmssw_base+"/interface/")
         ROOT.gSystem.AddIncludePath("-I"+self.cmssw_base+"/src/")
+        #ROOT.gSystem.AddIncludePath("-I"+self.cmssw_base+"/lib/")
         ROOT.gSystem.Load("libJHUGenMELAMELA.so") 
         ROOT.gSystem.Load(self.cmssw_base+"/src/JHUGenMELA/MELA/data/"+self.cmssw_arch+"/libmcfm_707.so")
 
         try:
-            ROOT.gROOT.LoadMacro(self.cmssw_base+'/src/LatinoAnalysis/Gardener/python/variables/melaHiggsEFT_OffShell.C+g')
+            ROOT.gROOT.LoadMacro(self.cmssw_base+'/src/LatinoAnalysis/Gardener/python/variables/melaHiggsEFT.C+g')
         except RuntimeError:
-            ROOT.gROOT.LoadMacro(self.cmssw_base+'/src/LatinoAnalysis/Gardener/python/variables/melaHiggsEFT_OffShell.C++g')
+            ROOT.gROOT.LoadMacro(self.cmssw_base+'/src/LatinoAnalysis/Gardener/python/variables/melaHiggsEFT.C++g')
       
         self.mela = ROOT.Mela(13, 125,  ROOT.TVar.SILENT) 
 
@@ -39,7 +40,7 @@ class JJH_EFTVars_OffShell(Module):
     def beginFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         self.out = mappedOutputTree(wrappedOutputTree, mapname=self._branch_map)
         self.newbranches = [
-          'hm','me_vbf_hsm','me_qcd_hsm','me_qcd_hm', 'D2jVBF'
+          'hm','me_vbf_hsm','me_qcd_hsm', 'D2jVBF'
           ]
         
         for nameBranches in self.newbranches :
@@ -63,33 +64,9 @@ class JJH_EFTVars_OffShell(Module):
 
         hm = -999
         me_vbf_hsm = -999 
-        #me_vbf_hm = -999 
-        #me_vbf_hp = -999 
-        #me_vbf_hl = -999 
-        #me_vbf_mixhm = -999 
-        #me_vbf_mixhp = -999
-        #me_wh_hsm = -999 
-        #me_wh_hm = -999 
-        #me_wh_hp = -999 
-        #me_wh_hl = -999 
-        #me_wh_mixhm = -999 
-        #me_wh_mixhp = -999
-        #me_zh_hsm = -999 
-        #me_zh_hm = -999 
-        #me_zh_hp = -999 
-        #me_zh_hl = -999 
-        #me_zh_mixhm = -999 
-        #me_zh_mixhp = -999
         me_qcd_hsm = -999 
-        #me_qcd_hm    = -999 
-        #me_qcd_mixhm = -999 
-#
-        #pjjSm_wh = -999 
-        #pjjTr_wh = -999
-        #pjjSm_zh = -999 
-        #pjjTr_zh = -999
-        #meAvg_wh = -999
-        #meAvg_zh = -999
+        D2jVBF = -999     # newly added 
+       
 
         if nJet > 1 and nLepton > 1 :
          
@@ -115,6 +92,8 @@ class JJH_EFTVars_OffShell(Module):
          Higgs = ROOT.TLorentzVector()
          Higgs = LL + NuNu
          hm  = Higgs.M()
+
+         print ('hm', hm)
 
          indx_j1 = 0
          indx_j2 = 1 
@@ -142,78 +121,37 @@ class JJH_EFTVars_OffShell(Module):
          self.mela.setCurrentCandidateFromIndex(0)
 
          ME_VBF = ROOT.melaHiggsEFT(self.mela, ROOT.TVar.JHUGen, ROOT.TVar.JJVBF, 0, 1) 
+         #me_vbf_hsm = ROOT.melaHiggsEFT_OffShell(self.mela, ROOT.TVar.JHUGen, ROOT.TVar.JJVBF, 0, 1) 
+         #print ('me_vbf_hsm', me_vbf_hsm)
+         print ('ME_VBF[0]',ME_VBF[0])
+         #print ('ME_VBF[1]',ME_VBF[1])
+         print ('ME_VBF',ME_VBF)
+
          me_vbf_hsm   = ME_VBF[0]
-         #me_vbf_hm    = ME_VBF[1]
-         #me_vbf_hp    = ME_VBF[2]
-         #me_vbf_hl    = ME_VBF[3]
-         #me_vbf_mixhm = ME_VBF[4]
-         #me_vbf_mixhp = ME_VBF[5] 
-
-         #ME_WH = ROOT.melaHiggsEFT(self.mela, ROOT.TVar.JHUGen, ROOT.TVar.Had_WH, 0, 1)
-         #me_wh_hsm   = ME_WH[0]
-         #me_wh_hm    = ME_WH[1]
-         #me_wh_hp    = ME_WH[2]
-         #me_wh_hl    = ME_WH[3]
-         #me_wh_mixhm = ME_WH[4]
-         #me_wh_mixhp = ME_WH[5] 
-
-         #pjjSm_wh    = ME_WH[7] 
-         #pjjTr_wh    = ME_WH[8] 
-         #meAvg_wh    = ME_WH[9] 
-   
-         #ME_ZH = ROOT.melaHiggsEFT(self.mela, ROOT.TVar.JHUGen, ROOT.TVar.Had_ZH, 0, 1)
-         #me_zh_hsm   = ME_ZH[0]
-         #me_zh_hm    = ME_ZH[1]
-         #me_zh_hp    = ME_ZH[2]
-         #me_zh_hl    = ME_ZH[3]
-         #me_zh_mixhm = ME_ZH[4]
-         #me_zh_mixhp = ME_ZH[5] 
-
-         #pjjSm_zh    = ME_ZH[7] 
-         #pjjTr_zh    = ME_ZH[8] 
-         #meAvg_zh    = ME_ZH[9] 
-
+         print ('me_vbf_hsm', me_vbf_hsm)
+        
          ME_QCD = ROOT.melaHiggsEFT(self.mela, ROOT.TVar.JHUGen, ROOT.TVar.JJQCD, 1, 1)
+         #me_qcd_hsm = ROOT.melaHiggsEFT_OffShell(self.mela, ROOT.TVar.JHUGen, ROOT.TVar.JJQCD, 1, 1)
          me_qcd_hsm   = ME_QCD[0]
-         #me_qcd_hm    = ME_QCD[1]
-         #me_qcd_mixhm = ME_QCD[4]
+         print ('me_qcd_hsm', me_qcd_hsm)
 
-         D2jVBF = 1/(1+((me_qcd_hsm)/(me_vbf_hsm))) 
-         print ('D2jVBF')
+         #D2jVBF = 1/(1+(me_qcd_hsm)/(me_vbf_hsm))
+         # Calculate D2jVBF with a default value of 0.0 when the denominator is zero
+         if me_vbf_hsm + me_qcd_hsm != 0:
+            D2jVBF = me_vbf_hsm / (me_vbf_hsm + me_qcd_hsm)
+         else:
+            D2jVBF = 0.0
+
+
+         print ('D2jVBF', D2jVBF)
 
          self.mela.resetInputEvent()
 
 
-        self.out.fillBranch( 'hm',  hm )
-
+        #self.out.fillBranch( 'hm',  hm )
         self.out.fillBranch( 'me_vbf_hsm',  me_vbf_hsm )
-        #self.out.fillBranch( 'me_vbf_hm',   me_vbf_hm )
-        #self.out.fillBranch( 'me_vbf_hp',   me_vbf_hp ) 
-        #self.out.fillBranch( 'me_vbf_hl',   me_vbf_hl )
-        #self.out.fillBranch( 'me_vbf_mixhm',me_vbf_mixhm )
-        #self.out.fillBranch( 'me_vbf_mixhp',me_vbf_mixhp ) 
-        #self.out.fillBranch( 'me_wh_hsm',   me_wh_hsm )
-        #self.out.fillBranch( 'me_wh_hm',    me_wh_hm )
-        #self.out.fillBranch( 'me_wh_hp',    me_wh_hp ) 
-        #self.out.fillBranch( 'me_wh_hl',    me_wh_hl )
-        #self.out.fillBranch( 'me_wh_mixhm', me_wh_mixhm )
-        #self.out.fillBranch( 'me_wh_mixhp', me_wh_mixhp ) 
-        #self.out.fillBranch( 'me_zh_hsm',   me_zh_hsm )
-        #self.out.fillBranch( 'me_zh_hm',    me_zh_hm )
-        #self.out.fillBranch( 'me_zh_hp',    me_zh_hp ) 
-        #self.out.fillBranch( 'me_zh_hl',    me_zh_hl )
-        #self.out.fillBranch( 'me_zh_mixhm', me_zh_mixhm )
-        #self.out.fillBranch( 'me_zh_mixhp', me_zh_mixhp ) 
         self.out.fillBranch( 'me_qcd_hsm',  me_qcd_hsm )
-        #self.out.fillBranch( 'me_qcd_hm',   me_qcd_hm )
-        #self.out.fillBranch( 'me_qcd_mixhm',me_qcd_mixhm )
-        #self.out.fillBranch( 'pjjSm_wh', pjjSm_wh )
-        #self.out.fillBranch( 'pjjTr_wh', pjjTr_wh )
-        #self.out.fillBranch( 'pjjSm_zh', pjjSm_zh )
-        #self.out.fillBranch( 'pjjTr_zh', pjjTr_zh )
-        #self.out.fillBranch( 'meAvg_wh', meAvg_wh )
-        #self.out.fillBranch( 'meAvg_zh', meAvg_zh )
-        self.out.fillBranch( 'D2jVBF',  D2jVBF )
+        self.out.fillBranch('D2jVBF',  D2jVBF)
 
 
         return True

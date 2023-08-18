@@ -325,7 +325,7 @@ class PostProcMaker():
        #self._targetDir = '/eos/cms/store/group/phys_higgs/cmshww/amassiro/HWWNano/'+iProd+'/' 
        #self._targetDir = self._Sites[self._LocalSite]['treeBaseDir']+'/'+iProd+'/'
        #self._targetDir = '/eos/user/t/tcarnaha/Summer_2022/HWW_Ntuples/'+iProd+'/'     ## commented this line to store in my area [ see next line ]
-       self._targetDir = '/eos/user/s/sverma/Summer_2022/HWW_Ntuples/'+iProd+'/'
+       self._targetDir = '/eos/user/s/sverma/www/Summer_2022/HWW_Ntuples/'+iProd+'/'
 
        #self._targetDir = self._Sites[self._LocalSite]['treeBaseDir']+'/'+iProd+'/'
        if not self._iniStep == 'Prod' : self._targetDir += self._iniStep+'__'+iStep+'/'
