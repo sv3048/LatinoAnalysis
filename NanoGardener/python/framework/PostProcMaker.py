@@ -325,7 +325,8 @@ class PostProcMaker():
        #self._targetDir = '/eos/cms/store/group/phys_higgs/cmshww/amassiro/HWWNano/'+iProd+'/' 
        #self._targetDir = self._Sites[self._LocalSite]['treeBaseDir']+'/'+iProd+'/'
        #self._targetDir = '/eos/user/t/tcarnaha/Summer_2022/HWW_Ntuples/'+iProd+'/'     ## commented this line to store in my area [ see next line ]
-       self._targetDir = '/eos/user/s/sverma/www/Summer_2022/HWW_Ntuples/'+iProd+'/'
+       #self._targetDir = '/eos/user/s/sverma/www/Summer_2022/HWW_Ntuples/'+iProd+'/'
+       self._targetDir = '/eos/user/m/mikumar/For_Sadhana/'+iProd+'/'
 
        #self._targetDir = self._Sites[self._LocalSite]['treeBaseDir']+'/'+iProd+'/'
        if not self._iniStep == 'Prod' : self._targetDir += self._iniStep+'__'+iStep+'/'
@@ -485,6 +486,8 @@ class PostProcMaker():
           #command = 'xrdcp -f '+self._Sites[self._LocalSite]['xrootduserPath_hww']+prodFile+' '+self._Sites[self._LocalSite]['xrootduserPath']+storeFile
           # READ from Taylor's and write on Sadhana's: uncomment 'xrootduserPath_hww' : 'root://eosuser.cern.ch//eos/user/t/tcarnaha/Summer_2022/HWW_Ntuples/'  in Sites.py, and uncomment the following line
           command = 'xrdcp -f '+self._Sites[self._LocalSite]['xrootduserPath_hww']+prodFile+' '+self._Sites[self._LocalSite]['xrootduserPath']+storeFile
+          # READ from Taylor's and write on Mintu's: uncomment 'xrootduserPath_hww' : 'root://eosuser.cern.ch//eos/user/t/tcarnaha/Summer_2022/HWW_Ntuples/'  in Sites.py, and uncomment the following line
+          command = 'xrdcp -f '+self._Sites[self._LocalSite]['xrootduserPath_hww']+prodFile+' '+self._Sites[self._LocalSite]['xrootduserPath']+storeFile
 
       # IFCA
       elif self._LocalSite == 'ifca' :
@@ -500,18 +503,18 @@ class PostProcMaker():
             print 'ERROR: mkStageOut to different site not yet implemented for _LocalSite = ',self._LocalSite
             exit()
       #KISTI T3
-      elif self._LocalSite == 'sdfarm' :
-	storeFile = storeFile.replace('xrootd', 'xrd')
-        if not cpMode:
-          command = 'xrdcp -f '+prodFile+' '+self._Sites[self._LocalSite]['xrootdPath']+storeFile
-        else:
-          command = 'xrdcp -f '+self._Sites[self._LocalSite]['xrootdPath']+prodFile+' '+self._Sites[self._LocalSite]['xrootdPath']+storeFile
+      #elif self._LocalSite == 'sdfarm' :
+	    #  storeFile = storeFile.replace('xrootd', 'xrd')
+      #  if not cpMode:
+      #    command = 'xrdcp -f '+prodFile+' '+self._Sites[self._LocalSite]['xrootdPath']+storeFile
+      #  else:
+      #    command = 'xrdcp -f '+self._Sites[self._LocalSite]['xrootdPath']+prodFile+' '+self._Sites[self._LocalSite]['xrootdPath']+storeFile
       # KIT
-      elif self._LocalSite == 'kit' : 
-        if not cpMode:
-          command = 'xrdcp -f '+prodFile+' '+self._Sites[self._LocalSite]['xrootdPath']+storeFile
-        else:
-          command = 'xrdcp -f '+self._Sites[self._LocalSite]['xrootdPath']+prodFile+' '+self._Sites[self._LocalSite]['xrootdPath']+storeFile
+      #elif self._LocalSite == 'kit' : 
+      #  if not cpMode:
+      #   command = 'xrdcp -f '+prodFile+' '+self._Sites[self._LocalSite]['xrootdPath']+storeFile
+      #  else:
+      #    command = 'xrdcp -f '+self._Sites[self._LocalSite]['xrootdPath']+prodFile+' '+self._Sites[self._LocalSite]['xrootdPath']+storeFile
 
       # MISSING STAGE OUT
       else :

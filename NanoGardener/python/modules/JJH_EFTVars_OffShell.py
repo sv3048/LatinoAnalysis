@@ -137,12 +137,17 @@ class JJH_EFTVars_OffShell(Module):
 
          #D2jVBF = 1/(1+(me_qcd_hsm)/(me_vbf_hsm))
          # Calculate D2jVBF with a default value of 0.0 when the denominator is zero
-         if me_vbf_hsm + me_qcd_hsm != 0:
-            D2jVBF = me_vbf_hsm / (me_vbf_hsm + me_qcd_hsm)
+
+         #if me_vbf_hsm + me_qcd_hsm != 0:
+         #   D2jVBF = me_vbf_hsm / (me_vbf_hsm + me_qcd_hsm)
+         #else:
+         #   D2jVBF = 0.0
+         if me_vbf_hsm != 0:
+             D2jVBF = 1/(1+((me_qcd_hsm)/(me_vbf_hsm)))
          else:
-            D2jVBF = 0.0
-
-
+              D2jVBF = 0.0
+             
+             
          print ('D2jVBF', D2jVBF)
 
          self.mela.resetInputEvent()
