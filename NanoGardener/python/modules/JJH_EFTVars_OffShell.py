@@ -40,7 +40,7 @@ class JJH_EFTVars_OffShell(Module):
     def beginFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         self.out = mappedOutputTree(wrappedOutputTree, mapname=self._branch_map)
         self.newbranches = [
-          'hm','me_vbf_hsm','me_qcd_hsm', 'D2jVBF'
+          'hm','me_qqh_hsm','me_ggh_hsm', 'D2jVBF'
           ]
         
         for nameBranches in self.newbranches :
@@ -63,12 +63,13 @@ class JJH_EFTVars_OffShell(Module):
         OrigJet = Collection(event, "Jet")
 
         hm = -999
-        me_vbf_hsm = -999 
-        me_qcd_hsm = -999 
+        me_qqh_hsm = -999 
+        me_ggh_hsm = -999 
         D2jVBF = -999     # newly added 
        
 
         if nJet > 1 and nLepton > 1 :
+        #if nJet == 2 and nLepton == 2 :
          
          L1 = ROOT.TLorentzVector()
          L2 = ROOT.TLorentzVector()
@@ -121,43 +122,46 @@ class JJH_EFTVars_OffShell(Module):
          self.mela.setCurrentCandidateFromIndex(0)
 
          ME_VBF = ROOT.melaHiggsEFT(self.mela, ROOT.TVar.JHUGen, ROOT.TVar.JJVBF, 0, 1) 
-         #me_vbf_hsm = ROOT.melaHiggsEFT_OffShell(self.mela, ROOT.TVar.JHUGen, ROOT.TVar.JJVBF, 0, 1) 
-         #print ('me_vbf_hsm', me_vbf_hsm)
+         
          print ('ME_VBF[0]',ME_VBF[0])
          #print ('ME_VBF[1]',ME_VBF[1])
          print ('ME_VBF',ME_VBF)
 
-         me_vbf_hsm   = ME_VBF[0]
-         print ('me_vbf_hsm', me_vbf_hsm)
+         me_qqh_hsm   = ME_VBF[0]
+         print ('me_qqh_hsm', me_qqh_hsm)
         
          ME_QCD = ROOT.melaHiggsEFT(self.mela, ROOT.TVar.JHUGen, ROOT.TVar.JJQCD, 1, 1)
          #me_qcd_hsm = ROOT.melaHiggsEFT_OffShell(self.mela, ROOT.TVar.JHUGen, ROOT.TVar.JJQCD, 1, 1)
-         me_qcd_hsm   = ME_QCD[0]
-         print ('me_qcd_hsm', me_qcd_hsm)
+         me_ggh_hsm   = ME_QCD[0]
+         print ('me_ggh_hsm', me_ggh_hsm)
 
-         #D2jVBF = 1/(1+(me_qcd_hsm)/(me_vbf_hsm))
+         #D2jVBF = 1/(1+(me_ggh_hsm)/(me_qqh_hsm))
          # Calculate D2jVBF with a default value of 0.0 when the denominator is zero
 
-         #if me_vbf_hsm + me_qcd_hsm != 0:
-         #   D2jVBF = me_vbf_hsm / (me_vbf_hsm + me_qcd_hsm)
+         #if me_qqh_hsm + me_ggh_hsm != 0:
+         #   D2jVBF = me_qqh_hsm / (me_qqh_hsm + me_ggh_hsm)
          #else:
          #   D2jVBF = 0.0
-         if me_vbf_hsm != 0:
-             D2jVBF = 1/(1+((me_qcd_hsm)/(me_vbf_hsm)))
+         if me_qqh_hsm != 0:
+            D2jVBF = 1/(1+((me_ggh_hsm)/(me_qqh_hsm)))
          else:
-              D2jVBF = 0.0
+            D2jVBF = 0.0
              
              
          print ('D2jVBF', D2jVBF)
 
          self.mela.resetInputEvent()
-
+         
+         
+         #only for the events that are satisfying 
+         self.out.fillBranch('D2jVBF',  D2jVBF)
+         
 
         #self.out.fillBranch( 'hm',  hm )
-        self.out.fillBranch( 'me_vbf_hsm',  me_vbf_hsm )
-        self.out.fillBranch( 'me_qcd_hsm',  me_qcd_hsm )
-        self.out.fillBranch('D2jVBF',  D2jVBF)
-
+        #self.out.fillBranch( 'me_qqh_hsm',  me_qqh_hsm )
+        #self.out.fillBranch( 'me_ggh_hsm',  me_ggh_hsm )
+        #self.out.fillBranch('D2jVBF',  D2jVBF)
+        
 
         return True
 
