@@ -57,38 +57,14 @@ def createULJESvariation(type, kind="Up"):
   return dictionary
 
 def createULJERvariation(type="", kind="Up"):
-  if type=="":
-    dictionary = {
-                    'isChain'    : False ,
-                    'do4MC'      : True  ,
-                    'do4Data'    : False  ,
-                    'import'     : 'LatinoAnalysis.NanoGardener.modules.UltraJetUncertaintiesProducer',
-                    'declare'    : 'JER%s%s = lambda : UltraJetUncertaintiesProducer(era="ULRPLME_YEAR", jerUncert=True, jesUncert=[], kind=["%s"], metBranchNames=["MET","PuppiMET"], splitJER=False, onlyJER=["%s"])' %(type, kind.lower(), kind.lower(), type),
-                    #'declare'    : 'JER%s%s = lambda : UltraJetUncertaintiesProducer(era="ULRPLME_YEAR", jerUncert=True, jesUncert=[], kind=["%s"], metBranchNames=["MET","PuppiMET","RawMET"], splitJER=False, onlyJER=["%s"])' %(type, kind.lower(), kind.lower(), type),
-
-                    'module'     : 'JER%s%s()' %(type, kind.lower())
-                 }
-  elif type=="all":
-    dictionary = {
-                    'isChain'    : False ,
-                    'do4MC'      : True  ,
-                    'do4Data'    : False  ,
-                    'import'     : 'LatinoAnalysis.NanoGardener.modules.UltraJetUncertaintiesProducer',
-                    'declare'    : 'JER%s%s = lambda : UltraJetUncertaintiesProducer(era="ULRPLME_YEAR", jerUncert=True, jesUncert=[], kind=["%s"], metBranchNames=["MET","PuppiMET"], splitJER=True, onlyJER=[""])' %(type, kind.lower(), kind.lower()),
-                    #'declare'    : 'JER%s%s = lambda : UltraJetUncertaintiesProducer(era="ULRPLME_YEAR", jerUncert=True, jesUncert=[], kind=["%s"], metBranchNames=["MET","PuppiMET","RawMET"], splitJER=True, onlyJER=[""])' %(type, kind.lower(), kind.lower()),
-                    'module'     : 'JER%s%s()' %(type, kind.lower())
-                 }
-  else:
-    dictionary = {
-                    'isChain'    : False ,
-                    'do4MC'      : True  ,
-                    'do4Data'    : False  ,
-                    'import'     : 'LatinoAnalysis.NanoGardener.modules.UltraJetUncertaintiesProducer',
-                    'declare'    : 'JER%s%s = lambda : UltraJetUncertaintiesProducer(era="ULRPLME_YEAR", jerUncert=True, jesUncert=[], kind=["%s"], metBranchNames=["MET","PuppiMET"], splitJER=True, onlyJER=["%s"])' %(type, kind.lower(), kind.lower(), type),
-                    #'declare'    : 'JER%s%s = lambda : UltraJetUncertaintiesProducer(era="ULRPLME_YEAR", jerUncert=True, jesUncert=[], kind=["%s"], metBranchNames=["MET","PuppiMET","RawMET"], splitJER=True, onlyJER=["%s"])' %(type, kind.lower(), kind.lower(), type),
-
-                    'module'     : 'JER%s%s()' %(type, kind.lower())
-                 }
+  dictionary = {
+                  'isChain'    : False ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'import'     : 'LatinoAnalysis.NanoGardener.modules.UltraJetUncertaintiesProducer',
+                  'declare'    : 'JER%s%s = lambda : UltraJetUncertaintiesProducer(era="ULRPLME_YEAR", jerUncert=True, jesUncert=[], kind=["%s"], metBranchNames=["MET","RawMET"], splitJER=True)' %(type, kind.lower(), kind.lower()),
+                  'module'     : 'JER%s%s()' %(type, kind.lower())
+               }
   return dictionary
 
 def createFatjetJESvariation(type_, kind="Up"):
@@ -151,29 +127,20 @@ def createULJESchain(type, kind="Up"):
   if type == "Total":
     typeShort = ""
   toreplace = typeShort+kind.lower()
-  chainTemplate = ['do_ULJESVAR_suffix','l2Kin_JESVAR', 'l3Kin_JESVAR', 'l4Kin_JESVAR','formulasMC_JESVAR','JJHEFT_JESVAR']
+  #chainTemplate = ['do_JESVAR_suffix','l2Kin_JESVAR', 'l3Kin_JESVAR', 'l4Kin_JESVAR','DYMVA_JESVAR','MonoHiggsMVA_JESVAR','formulasMC_JESVAR','JJHEFT_JESVAR']
+  chainTemplate = ['do_ULJESVAR_suffix']
   chain = []
   for item in chainTemplate:
     chain.append(item.replace("VAR", toreplace))
   return chain
 
-def createULJERchain(type, kind="Up"):
-  chainTemplate = ['do_ULJERVAR_suffix','l2Kin_JERVAR', 'l3Kin_JERVAR', 'l4Kin_JERVAR','formulasMC_JERVAR','JJHEFT_JERVAR']
+def createULJERchain(type="", kind="Up"):
+  #chainTemplate = ['do_JERVAR_suffix','l2Kin_JERVAR', 'l3Kin_JERVAR', 'l4Kin_JERVAR','DYMVA_JERVAR','MonoHiggsMVA_JERVAR','formulasMC_JERVAR','JJHEFT_JERVAR']
+  chainTemplate = ['do_ULJERVAR_suffix']
   chain = []
-  toreplace = type+kind.lower()
   for item in chainTemplate:
-    chain.append(item.replace("VAR", toreplace))
+    chain.append(item.replace("VAR", kind.lower()))
   return chain
-
-def createULJERFullChain(kind="Up"):
-  chain = ['do_ULJER%s_suffix' %(kind.lower())] + ['do_ULJERall%s_suffix' %(kind.lower())]
-  chain += ['l2Kin_JER%s' %(kind.lower())]+['l2Kin_JER%s%s' %(i, kind.lower()) for i in range(0,6)]
-  chain += ['l3Kin_JER%s' %(kind.lower())]+['l3Kin_JER%s%s' %(i, kind.lower()) for i in range(0,6)]
-  chain += ['l4Kin_JER%s' %(kind.lower())]+['l4Kin_JER%s%s' %(i, kind.lower()) for i in range(0,6)]
-  chain += ['formulasMC_JER%s' %(kind.lower())]+['formulasMC_JER%s%s' %(i, kind.lower()) for i in range(0,6)]
-  chain += ['JJHEFT_JER%s' %(kind.lower())]+ ['JJHEFT_JER%s%s' %(i, kind.lower()) for i in range(0,6)]
-  return chain
-
 
 def createJESchain_CombJJLNu(type, kind="Up"):
   typeShort = type
@@ -350,67 +317,67 @@ def addMETchainMembers():
 
 def addJERchainMembers():
   dictionary = {}
-  for type in ["","0","1","2","3","4","5"]:
-      for kind in ["Up", "Do"]:
-          mapname = "JER"+type+kind.lower()
-     
-          dictionary['l2Kin_'+mapname] = {
-                      'isChain'    : False ,
-                      'do4MC'      : True  ,
-                      'do4Data'    : True  ,
-                      'import'     : 'LatinoAnalysis.NanoGardener.modules.l2KinProducer' ,
-                      'declare'    : '',
-                      'module'     : 'l2KinProducer(branch_map="%s")' %mapname ,
-                   }
-          dictionary['l3Kin_'+mapname] = {
-                      'isChain'    : False ,
-                      'do4MC'      : True  ,
-                      'do4Data'    : True  ,
-                      'import'     : 'LatinoAnalysis.NanoGardener.modules.l3KinProducer' ,
-                      'declare'    : '',
-                      'module'     : 'l3KinProducer(branch_map="%s")' %mapname ,
-                   }
-          dictionary['l4Kin_'+mapname] = {
-                      'isChain'    : False ,
-                      'do4MC'      : True  ,
-                      'do4Data'    : True  ,
-                      'import'     : 'LatinoAnalysis.NanoGardener.modules.l4KinProducer' ,
-                      'declare'    : '',
-                      'module'     : 'l4KinProducer(branch_map="%s")' %mapname ,
-                   }
-          dictionary['formulasMC_'+mapname] = {
-                      'isChain'    : False ,
-                      'do4MC'      : True  ,
-                      'do4Data'    : False  ,
-                      'import'     : 'LatinoAnalysis.NanoGardener.modules.GenericFormulaAdder' ,
-                      'declare'    : '',
-                      'module'     : 'GenericFormulaAdder(\'data/formulasToAdd_MC_RPLME_CMSSW.py\', branch_map="%s")' %mapname ,
-                     }
-          dictionary['DYMVA_'+mapname] = {
-                #     'prebash'    : ['source /cvmfs/sft.cern.ch/lcg/views/LCG_92/x86_64-centos7-gcc62-opt/setup.sh'] ,
-                      'isChain'    : False ,
-                      'do4MC'      : True  ,
-                      'do4Data'    : True  ,
-                      'import'     : 'LatinoAnalysis.NanoGardener.modules.TMVAfiller' ,
-                      'declare'    : 'DYMVA_MAPNAME = lambda : TMVAfiller(\'data/DYMVA_RPLME_YEAR_alt_cfg.py\', branch_map="MAPNAME")'.replace("MAPNAME", mapname) ,
-                      'module'     : 'DYMVA_MAPNAME()'.replace("MAPNAME", mapname),
-                }
-          dictionary['MonoHiggsMVA_'+mapname] = {
-                      'isChain'  : False ,
-                      'do4MC'    : True  ,
-                      'do4Data'  : True ,
-                      'import'   : 'LatinoAnalysis.NanoGardener.modules.TMVAfiller' ,
-                      'declare'  : 'MonoHiggsMVA_MAPNAME = lambda : TMVAfiller("data/MonoHiggsMVA_cfg.py", branch_map="MAPNAME")'.replace("MAPNAME", mapname),
-                      'module'   : 'MonoHiggsMVA_MAPNAME()'.replace("MAPNAME", mapname),
-                   }
-          dictionary['JJHEFT_'+mapname] = {
-                        'isChain'    : False ,
-                        'do4MC'      : True  ,
-                        'do4Data'    : True  ,
-                        'import'     : 'LatinoAnalysis.NanoGardener.modules.JJH_EFTVars' ,
-                        'declare'    : 'JJHEFT_MAPNAME = lambda : JJH_EFTVars(branch_map="MAPNAME")'.replace("MAPNAME", mapname),
-                        'module'     : 'JJHEFT_MAPNAME()'.replace("MAPNAME", mapname),
-                     }
+  type=""
+  for kind in ["Up", "Do"]:
+      mapname = "JER"+type+kind.lower()
+ 
+      dictionary['l2Kin_'+mapname] = {
+                  'isChain'    : False ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : True  ,
+                  'import'     : 'LatinoAnalysis.NanoGardener.modules.l2KinProducer' ,
+                  'declare'    : '',
+                  'module'     : 'l2KinProducer(branch_map="%s")' %mapname ,
+               }
+      dictionary['l3Kin_'+mapname] = {
+                  'isChain'    : False ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : True  ,
+                  'import'     : 'LatinoAnalysis.NanoGardener.modules.l3KinProducer' ,
+                  'declare'    : '',
+                  'module'     : 'l3KinProducer(branch_map="%s")' %mapname ,
+               }
+      dictionary['l4Kin_'+mapname] = {
+                  'isChain'    : False ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : True  ,
+                  'import'     : 'LatinoAnalysis.NanoGardener.modules.l4KinProducer' ,
+                  'declare'    : '',
+                  'module'     : 'l4KinProducer(branch_map="%s")' %mapname ,
+               }
+      dictionary['formulasMC_'+mapname] = {
+                  'isChain'    : False ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'import'     : 'LatinoAnalysis.NanoGardener.modules.GenericFormulaAdder' ,
+                  'declare'    : '',
+                  'module'     : 'GenericFormulaAdder(\'data/formulasToAdd_MC_RPLME_CMSSW.py\', branch_map="%s")' %mapname ,
+                 }
+      dictionary['DYMVA_'+mapname] = {
+            #     'prebash'    : ['source /cvmfs/sft.cern.ch/lcg/views/LCG_92/x86_64-centos7-gcc62-opt/setup.sh'] ,
+                  'isChain'    : False ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : True  ,
+                  'import'     : 'LatinoAnalysis.NanoGardener.modules.TMVAfiller' ,
+                  'declare'    : 'DYMVA_MAPNAME = lambda : TMVAfiller(\'data/DYMVA_RPLME_YEAR_alt_cfg.py\', branch_map="MAPNAME")'.replace("MAPNAME", mapname) ,
+                  'module'     : 'DYMVA_MAPNAME()'.replace("MAPNAME", mapname),
+            }
+      dictionary['MonoHiggsMVA_'+mapname] = {
+                  'isChain'  : False ,
+                  'do4MC'    : True  ,
+                  'do4Data'  : True ,
+                  'import'   : 'LatinoAnalysis.NanoGardener.modules.TMVAfiller' ,
+                  'declare'  : 'MonoHiggsMVA_MAPNAME = lambda : TMVAfiller("data/MonoHiggsMVA_cfg.py", branch_map="MAPNAME")'.replace("MAPNAME", mapname),
+                  'module'   : 'MonoHiggsMVA_MAPNAME()'.replace("MAPNAME", mapname),
+               }
+      dictionary['JJHEFT_'+mapname] = {
+                    'isChain'    : False ,
+                    'do4MC'      : True  ,
+                    'do4Data'    : True  ,
+                    'import'     : 'LatinoAnalysis.NanoGardener.modules.JJH_EFTVars' ,
+                    'declare'    : 'JJHEFT_MAPNAME = lambda : JJH_EFTVars(branch_map="MAPNAME")'.replace("MAPNAME", mapname),
+                    'module'     : 'JJHEFT_MAPNAME()'.replace("MAPNAME", mapname),
+                 }
   return dictionary
 
 def addSystChainMembers_CombJJLNu():
@@ -886,37 +853,6 @@ Steps = {
                                      'wwNLOEWK','wwNLOEWK2','wzNLOEWK','zzNLOEWK','zNLOEWK','wNLOEWK','HiggsGenVars','qqHTheoryUncertainty',
                                      'CleanFatJet', 'BoostedWtagSF','leptonMVAFiller'],
                 },
-
-  'MCCorr2016v9NoJERInHorn' : {
-                     'isChain'    : True  ,
-                     'do4MC'      : True  ,
-                     'do4Data'    : False ,
-                     'subTargets' : ['baseW','JERsMCUL_highPt','FatJERsMCUL_highPt','PrefCorr2016','btagPerJet_DeepCSV_UL', 'btagPerJet_DeepJet_UL','JetPUID_SF_UL',
-                                     'rochesterMC', 'trigMC','LeptonSF','puW','l2Kin', 'l3Kin', 'l4Kin','formulasMC','EmbeddingVeto',
-                                     'wwNLOEWK','wwNLOEWK2','wzNLOEWK','zzNLOEWK','zNLOEWK','wNLOEWK','HiggsGenVars','qqHTheoryUncertainty',
-                                     'CleanFatJet', 'BoostedWtagSF','leptonMVAFiller'],
-                },
-
-  'MCCorr2016v9NoJER' : {
-                     'isChain'    : True  ,
-                     'do4MC'      : True  ,
-                     'do4Data'    : False ,
-                     'subTargets' : ['baseW','PrefCorr2016','btagPerJet2016','JetPUID_SF_UL',
-                                     'rochesterMC', 'trigMC','LeptonSF','puW','l2Kin', 'l3Kin', 'l4Kin','formulasMC','EmbeddingVeto',
-                                     'wwNLOEWK','wwNLOEWK2','wzNLOEWK','zzNLOEWK','zNLOEWK','wNLOEWK','HiggsGenVars','qqHTheoryUncertainty',
-                                     'CleanFatJet', 'BoostedWtagSF','leptonMVAFiller'],
-                },
-
-  'btagULFix' : {
-                     'isChain'    : True  ,
-                     'do4MC'      : True  ,
-                     'do4Data'    : False ,
-                     'subTargets' : ['btagPerJet_DeepJet_UL', 'btagPerJet_DeepCSV_UL'],
-                     'branchsel'  : os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/dropbtag.txt',
-                     'outputbranchsel'  : os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepall.txt'
-                },
-
-
   'JERtest' : {
                      'isChain'    : True  ,
                      'do4MC'      : True  ,
@@ -1108,18 +1044,6 @@ Steps = {
                                      'CleanFatJet', 'BoostedWtagSF', 'leptonMVAFiller']
                 },
 
-  'MCCorr2017v9NoJERInHorn' : {
-                     'isChain'    : True  ,
-                     'do4MC'      : True  ,
-                     'do4Data'    : False ,
-
-                     'subTargets' : ['baseW','JERsMCUL_highPt','FatJERsMCUL_highPt','PrefCorr2017', 'btagPerJet_DeepCSV_UL', 'btagPerJet_DeepJet_UL','JetPUID_SF_UL',
-                                     'rochesterMC','trigMC','LeptonSF','puW','l2Kin', 'l3Kin', 'l4Kin','formulasMC','EmbeddingVeto',
-                                     'wwNLOEWK','wwNLOEWK2','wzNLOEWK','zzNLOEWK','zNLOEWK','wNLOEWK','HiggsGenVars','qqHTheoryUncertainty',
-                                     'CleanFatJet', 'BoostedWtagSF', 'leptonMVAFiller']
-                },
-
-
   'MCCorr2017v9noJER' : {
                      'isChain'    : True  ,
                      'do4MC'      : True  ,
@@ -1298,27 +1222,6 @@ Steps = {
                                      'wwNLOEWK','wwNLOEWK2','wzNLOEWK','zzNLOEWK','zNLOEWK', 'wNLOEWK','qqHTheoryUncertainty',
                                      'CleanFatJet', 'BoostedWtagSF', 'leptonMVAFiller']
                 },
-
-  'MCCorr2018v9NoJERInHorn' : {
-                     'isChain'    : True  ,
-                     'do4MC'      : True  ,
-                     'do4Data'    : False ,
-                     'subTargets' : ['baseW','JERsMCUL_highPt','FatJERsMCUL_highPt','btagPerJet_DeepCSV_UL', 'btagPerJet_DeepJet_UL','JetPUID_SF_UL',
-                                     'rochesterMC','trigMC','LeptonSF','puW','l2Kin', 'l3Kin', 'l4Kin','formulasMC','EmbeddingVeto',
-                                     'wwNLOEWK','wwNLOEWK2','wzNLOEWK','zzNLOEWK','zNLOEWK', 'wNLOEWK','qqHTheoryUncertainty',
-                                     'CleanFatJet', 'BoostedWtagSF', 'leptonMVAFiller']
-                },
-
-
-  'MCCorr2018v9NoJERInHornFS' : {
-                     'isChain'    : True  ,
-                     'do4MC'      : True  ,
-                     'do4Data'    : False ,
-                     'subTargets' : ['JERsMCUL_highPt','FatJERsMCUL_highPt','btagPerJet_DeepCSV_UL', 'btagPerJet_DeepJet_UL','JetPUID_SF_UL',
-                                     'rochesterMC','trigMCFS','LeptonSF','puW','l2Kin','formulasMCFS', 
-                                     'CleanFatJet', 'BoostedWtagSF', 'leptonMVAFiller']
-                },
-
 
   'MCCorr2018v9noJER' : {
                      'isChain'    : True  ,
@@ -3159,6 +3062,16 @@ Steps = {
                    'module'     : 'JJHEFT()',
                  },
 
+   # added JJHEFT block for Off Shell analysis purpose
+    'JJHEFT_OffShell' : {
+                   'isChain'    : False ,
+                   'do4MC'      : True ,
+                   'do4Data'    : True ,
+                   'import'     : 'LatinoAnalysis.NanoGardener.modules.JJH_EFTVars_OffShell' ,
+                   'declare'    : 'JJHEFT_OffShell = lambda : JJH_EFTVars_OffShell()',
+                   'module'     : 'JJHEFT_OffShell()',
+                 },
+   ######## 
     'JJHEFT_ElepTup' : {
                     'isChain'    : False ,
                     'do4MC'      : True  ,
@@ -3230,24 +3143,6 @@ Steps = {
 #                   'declare'    : 'JJHEFT_JESdo = lambda : JJH_EFTVars(branch_map="JESdo")',
 #                   'module'     : 'JJHEFT_JESdo()',
 #                },
-
-    'JJHEFT_JERup' : {
-                  'isChain'    : False ,
-                  'do4MC'      : True  ,
-                  'do4Data'    : True  ,
-                  'import'     : 'LatinoAnalysis.NanoGardener.modules.JJH_EFTVars' ,
-                  'declare'    : 'JJHEFT_JERup = lambda : JJH_EFTVars(branch_map="JERup")',
-                  'module'     : 'JJHEFT_JERup()',
-               },
-
-    'JJHEFT_JERdo' : {
-                  'isChain'    : False ,
-                  'do4MC'      : True  , 
-                  'do4Data'    : True  , 
-                  'import'     : 'LatinoAnalysis.NanoGardener.modules.JJH_EFTVars' , 
-                  'declare'    : 'JJHEFT_JERdo = lambda : JJH_EFTVars(branch_map="JERdo")',
-                  'module'     : 'JJHEFT_JERdo()',
-               },
 
 
     'EFTGen' : {
@@ -3324,15 +3219,6 @@ Steps = {
                  'declare'    : 'trigMC = lambda : TrigMaker("RPLME_CMSSW",isData=False,keepRunP=False)',
                  'module'     : 'trigMC()',
                },
-
-  'trigMCFS'   : { 'isChain'    : False ,
-                 'do4MC'      : True  ,
-                 'do4Data'    : False ,
-                 'import'     : 'LatinoAnalysis.NanoGardener.modules.TrigMakerFS' ,
-                 'declare'    : 'trigMCFS = lambda : TrigMakerFS("RPLME_CMSSW",isData=False,keepRunP=False)',
-                 'module'     : 'trigMCFS()',
-               },
-
 
   'trigMC_Cut'   : { 'isChain'    : False ,
                  'do4MC'      : True  ,
@@ -3512,106 +3398,17 @@ Steps = {
                  },
 
     'JERup_suffix' :   {
-                  'isChain'    : True,
-                  'do4MC'      : True,
-                  'do4Data'    : False,
-                  'subTargets' : createULJERchain("","Up"), #KELLO NEW
-                  #'subTargets' : createULJERFullChain("Up"),
-                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts2.txt'
-               },
-
-    'JER0up_suffix' :   {
                   'isChain'    : True ,
                   'do4MC'      : True  ,
                   'do4Data'    : False  ,
-                  'subTargets' : createULJERchain("0", "Up"), #KELLO NEW
+                  'subTargets' : createULJERchain("", "Up"), #KELLO NEW
                   'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts2.txt'
                },
-    'JER1up_suffix' :   {
-                  'isChain'    : True ,
-                  'do4MC'      : True  ,
-                  'do4Data'    : False  ,
-                  'subTargets' : createULJERchain("1", "Up"), #KELLO NEW
-                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts2.txt'
-               },
-    'JER2up_suffix' :   {
-                  'isChain'    : True ,
-                  'do4MC'      : True  ,
-                  'do4Data'    : False  ,
-                  'subTargets' : createULJERchain("2", "Up"), #KELLO NEW
-                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts2.txt'
-               },
-    'JER3up_suffix' :   {
-                  'isChain'    : True ,
-                  'do4MC'      : True  ,
-                  'do4Data'    : False  ,
-                  'subTargets' : createULJERchain("3", "Up"), #KELLO NEW
-                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts2.txt'
-               },
-    'JER4up_suffix' :   {
-                  'isChain'    : True ,
-                  'do4MC'      : True  ,
-                  'do4Data'    : False  ,
-                  'subTargets' : createULJERchain("4", "Up"), #KELLO NEW
-                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts2.txt'
-               },
-    'JER5up_suffix' :   {
-                  'isChain'    : True ,
-                  'do4MC'      : True  ,
-                  'do4Data'    : False  ,
-                  'subTargets' : createULJERchain("5", "Up"), #KELLO NEW
-                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts2.txt'
-               },
-
     'JERdo_suffix' :   {
-                  'isChain'    : True,
-                  'do4MC'      : True,
-                  'do4Data'    : False,
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
                   'subTargets' : createULJERchain("", "Do"), #KELLO NEW
-                  #'subTargets' :  createULJERFullChain("Do"),
-                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts2.txt'
-               },
-
-    'JER0do_suffix' :   {
-                  'isChain'    : True ,
-                  'do4MC'      : True  ,
-                  'do4Data'    : False  ,
-                  'subTargets' : createULJERchain("0", "Do"), #KELLO NEW
-                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts2.txt'
-               },
-    'JER1do_suffix' :   {
-                  'isChain'    : True ,
-                  'do4MC'      : True  ,
-                  'do4Data'    : False  ,
-                  'subTargets' : createULJERchain("1", "Do"), #KELLO NEW
-                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts2.txt'
-               },
-    'JER2do_suffix' :   {
-                  'isChain'    : True ,
-                  'do4MC'      : True  ,
-                  'do4Data'    : False  ,
-                  'subTargets' : createULJERchain("2", "Do"), #KELLO NEW
-                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts2.txt'
-               },
-    'JER3do_suffix' :   {
-                  'isChain'    : True ,
-                  'do4MC'      : True  ,
-                  'do4Data'    : False  ,
-                  'subTargets' : createULJERchain("3", "Do"), #KELLO NEW
-                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts2.txt'
-               },
-    'JER4do_suffix' :   {
-                  'isChain'    : True ,
-                  'do4MC'      : True  ,
-                  'do4Data'    : False  ,
-                  'subTargets' : createULJERchain("4", "Do"), #KELLO NEW
-                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts2.txt'
-               },
-    'JER5do_suffix' :   {
-                  'isChain'    : True ,
-                  'do4MC'      : True  ,
-                  'do4Data'    : False  ,
-                  'subTargets' : createULJERchain("5", "Do"), #KELLO NEW
                   'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts2.txt'
                },
 
@@ -3689,25 +3486,22 @@ Steps = {
                   'declare'    : 'btagSFProducer2018 = lambda : btagSFProducer(era="2018", algo="deepcsv")',
                   'module'     : 'btagSFProducer2018()',
                  },
-
   'btagPerJet_DeepCSV_UL': {
                   'isChain'    : False ,
                   'do4MC'      : True  ,
                   'do4Data'    : False  ,
                   'import'     : 'LatinoAnalysis.NanoGardener.modules.btagSFProducerLatinos' ,
-                  'declare'    : 'btagSFProducer_DeepCSV_UL = lambda : btagSFProducerLatinos(era="RPLME_CMSSW_shape", algo="deepcsv", jesSystsForShape=["jes","jesAbsolute","jesAbsolute_RPLME_YEAR","jesBBEC1","jesBBEC1_RPLME_YEAR","jesEC2","jesEC2_RPLME_YEAR","jesFlavorQCD","jesHF","jesHF_RPLME_YEAR","jesRelativeBal","jesRelativeSample_RPLME_YEAR"])',
+                  'declare'    : 'btagSFProducer_DeepCSV_UL = lambda : btagSFProducerLatinos(era="RPLME_CMSSW_shape", algo="deepcsv")',
                   'module'     : 'btagSFProducer_DeepCSV_UL()',
                  },
-
   'btagPerJet_DeepJet_UL': {
                   'isChain'    : False ,
                   'do4MC'      : True  ,
                   'do4Data'    : False  ,
                   'import'     : 'LatinoAnalysis.NanoGardener.modules.btagSFProducerLatinos' ,
-                  'declare'    : 'btagSFProducer_DeepJet_UL = lambda : btagSFProducerLatinos(era="RPLME_CMSSW_shape", algo="deepjet", jesSystsForShape=["jes","jesAbsolute","jesAbsolute_RPLME_YEAR","jesBBEC1","jesBBEC1_RPLME_YEAR","jesEC2","jesEC2_RPLME_YEAR","jesFlavorQCD","jesHF","jesHF_RPLME_YEAR","jesRelativeBal","jesRelativeSample_RPLME_YEAR"])',
+                  'declare'    : 'btagSFProducer_DeepJet_UL = lambda : btagSFProducerLatinos(era="RPLME_CMSSW_shape", algo="deepjet")',
                   'module'     : 'btagSFProducer_DeepJet_UL()',
                  },
-
 
   'btagPerEvent': {
                   'isChain'    : False ,
@@ -4137,7 +3931,6 @@ Steps = {
                   'declare'    : '',
                   'module'     : 'l2KinProducer(branch_map="METdo")' ,
                },
-
   'l2Kin_JESup' : {
                   'isChain'    : False ,
                   'do4MC'      : True  ,
@@ -4383,15 +4176,6 @@ Steps = {
                   'import'     : 'LatinoAnalysis.NanoGardener.modules.GenericFormulaAdder' ,
                   'declare'    : '',
                   'module'     : 'GenericFormulaAdder(\'data/formulasToAdd_MC_RPLME_CMSSW.py\')' ,
-                 },
-
-  'formulasMCFS' : {
-                  'isChain'    : False ,
-                  'do4MC'      : True  ,
-                  'do4Data'    : False  ,
-                  'import'     : 'LatinoAnalysis.NanoGardener.modules.GenericFormulaAdder' ,
-                  'declare'    : '',
-                  'module'     : 'GenericFormulaAdder(\'data/formulasToAdd_MCFS_RPLME_CMSSW.py\')' ,
                  },
    
 
@@ -4817,16 +4601,10 @@ Steps = {
 ## UL version of suffix ##
 ##########################
 
-  'do_ULJESup_suffix' : createULJESvariation("Total", "Up"),
-  'do_ULJESdo_suffix' : createULJESvariation("Total", "Do"),
   'do_ULJESAbsoluteup_suffix' : createULJESvariation("Absolute", "Up"),
   'do_ULJESAbsolutedo_suffix' : createULJESvariation("Absolute", "Do"),
   'do_ULJESAbsolute_RPLME_YEARup_suffix' : createULJESvariation("Absolute_RPLME_YEAR", "Up"),
   'do_ULJESAbsolute_RPLME_YEARdo_suffix' : createULJESvariation("Absolute_RPLME_YEAR", "Do"),
-  'do_ULJESBBEC1up_suffix' : createULJESvariation("BBEC1", "Up"),
-  'do_ULJESBBEC1do_suffix' : createULJESvariation("BBEC1", "Do"),
-  'do_ULJESBBEC1_RPLME_YEARup_suffix' : createULJESvariation("BBEC1_RPLME_YEAR", "Up"),
-  'do_ULJESBBEC1_RPLME_YEARdo_suffix' : createULJESvariation("BBEC1_RPLME_YEAR", "Do"),
   'do_ULJESEC2up_suffix' : createULJESvariation("EC2", "Up"),
   'do_ULJESEC2do_suffix' : createULJESvariation("EC2", "Do"),
   'do_ULJESEC2_RPLME_YEARup_suffix' : createULJESvariation("EC2_RPLME_YEAR", "Up"),
@@ -4843,21 +4621,8 @@ Steps = {
   'do_ULJESRelativeSample_RPLME_YEARdo_suffix' : createULJESvariation("RelativeSample_RPLME_YEAR", "Do"),
 
   'do_ULJERup_suffix' : createULJERvariation("", "Up"),
-  'do_ULJERallup_suffix' : createULJERvariation("all", "Up"),
-  'do_ULJER0up_suffix' : createULJERvariation("0", "Up"),
-  'do_ULJER1up_suffix' : createULJERvariation("1", "Up"),
-  'do_ULJER2up_suffix' : createULJERvariation("2", "Up"),
-  'do_ULJER3up_suffix' : createULJERvariation("3", "Up"),
-  'do_ULJER4up_suffix' : createULJERvariation("4", "Up"),
-  'do_ULJER5up_suffix' : createULJERvariation("5", "Up"), 
-  'do_ULJERdo_suffix' : createULJERvariation("", "Do"),
-  'do_ULJERalldo_suffix' : createULJERvariation("all", "Do"),
-  'do_ULJER0do_suffix' : createULJERvariation("0", "Do"),
-  'do_ULJER1do_suffix' : createULJERvariation("1", "Do"),
-  'do_ULJER2do_suffix' : createULJERvariation("2", "Do"),
-  'do_ULJER3do_suffix' : createULJERvariation("3", "Do"),
-  'do_ULJER4do_suffix' : createULJERvariation("4", "Do"),  
-  'do_ULJER5do_suffix' : createULJERvariation("5", "Do"),
+  'do_ULJERdo_suffix' : createULJERvariation("", "Do"), 
+
 
 #------------------------------------------#
 #                                          #
@@ -4868,41 +4633,111 @@ Steps = {
 ###############################################
 ### All-In JES steps - generally longer jobs ##
 ###############################################
+
 # What about B-Tag weights ? They are done on top of the Jet Collection, not the CleanJet, so they don't catch th jet pT update !!!!
 
-  'JESup_suffix' :   {
-                  'isChain'    : True,
-                  'do4MC'      : True,
-                  'do4Data'    : False,
-                  'subTargets' :  createULJESchain("Total", "Up")+\
-                                  createULJESchain("Absolute", "Up")+\
-                                  createULJESchain("Absolute_RPLME_YEAR", "Up")+\
-                                  createULJESchain("BBEC1", "Up")+\
-                                  createULJESchain("BBEC1_RPLME_YEAR", "Up")+\
-                                  createULJESchain("EC2", "Up")+\
-                                  createULJESchain("EC2_RPLME_YEAR", "Up")+\
-                                  createULJESchain("FlavorQCD", "Up")+\
-                                  createULJESchain("HF", "Up")+\
-                                  createULJESchain("HF_RPLME_YEAR", "Up")+\
-                                  createULJESchain("RelativeBal", "Up")+\
+##################
+## pre-UL UP/DO ##
+##################
+#TO BE REMOVED if tested that UL version is backwards compatible
+
+'''
+   'JESup' :   {  
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' : ['JESBase','do_JESup','l2Kin', 'l3Kin', 'l4Kin','DYMVA','MonoHiggsMVA','formulasMC'],
+               },
+
+   'JESup_suffix' :   {
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' : ['JESBase'] +
+                                  createJESchain("Total", "Up") +
+                                  createJESchain("Absolute", "Up") +
+                                  createJESchain("Absolute_RPLME_YEAR", "Up") +
+                                  createJESchain("BBEC1", "Up") +
+                                  createJESchain("BBEC1_RPLME_YEAR", "Up") +
+                                  createJESchain("EC2", "Up") +
+                                  createJESchain("EC2_RPLME_YEAR", "Up") +
+                                  createJESchain("FlavorQCD", "Up") +
+                                  createJESchain("HF", "Up") +
+                                  createJESchain("HF_RPLME_YEAR", "Up") +
+                                  createJESchain("RelativeBal", "Up") +
+                                  createJESchain("RelativeSample_RPLME_YEAR", "Up"),
+                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
+                  #'subTargets' : ['JESBase','do_JESup_suffix','l2Kin_JESup', 'l3Kin_JESup', 'l4Kin_JESup','DYMVA_JESup','MonoHiggsMVA_JESup','formulasMC_JESup',
+                  #               'do_JESAbsoluteup_suffix','do_JESAbsolutedo_suffix','do_JESAbsolute_RPLME_YEARup_suffix','do_JESAbsolute_RPLME_YEARdo_suffix','do_JESBBEC1up_suffix','do_JESBBEC1do_suffix','do_JESBBEC1_RPLME_YEARup_suffix','do_JESBBEC1_RPLME_YEARdo_suffix','do_JESEC2up_suffix','do_JESEC2do_suffix','do_JESEC2_RPLME_YEARup_suffix','do_JESEC2_RPLME_YEARdo_suffix','do_JESFlavorQCDup_suffix','do_JESFlavorQCDdo_suffix','do_JESHFup_suffix','do_JESHFdo_suffix','do_JESHF_RPLME_YEARup_suffix','do_JESHF_RPLME_YEARup_suffix','do_JESRelativeBaldo_suffix','do_JESRelativeBaldo_suffix','do_JESRelativeBal_RPLME_YEARup_suffix','do_JESRelativeBal_RPLME_YEARdo_suffix'],
+               },
+
+   'JESdo' :   {
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' : ['JESBase','do_JESdo','l2Kin', 'l3Kin', 'l4Kin','DYMVA','MonoHiggsMVA','formulasMC'],
+               },
+
+   'JESdo_suffix' :   {
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' : ['JESBase'] +
+                                  createJESchain("Total", "Do") +
+                                  createJESchain("Absolute", "Do") +
+                                  createJESchain("Absolute_RPLME_YEAR", "Do") +
+                                  createJESchain("BBEC1", "Do") +
+                                  createJESchain("BBEC1_RPLME_YEAR", "Do") +
+                                  createJESchain("EC2", "Do") +
+                                  createJESchain("EC2_RPLME_YEAR", "Do") +
+                                  createJESchain("FlavorQCD", "Do") +
+                                  createJESchain("HF", "Do") +
+                                  createJESchain("HF_RPLME_YEAR", "Do") +
+                                  createJESchain("RelativeBal", "Do") +
+                                  createJESchain("RelativeSample_RPLME_YEAR", "Do"),
+                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
+                  #'subTargets' : ['JESBase','do_JESdo_suffix','l2Kin_JESdo', 'l3Kin_JESdo', 'l4Kin_JESdo','DYMVA_JESdo','MonoHiggsMVA_JESdo','formulasMC_JESdo'],
+               },
+'''
+
+##############
+## UL UP/DO ##
+##############
+
+   'JESup_suffix' :   {
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' :  createULJESchain("Total", "Up") +
+                                  createULJESchain("Absolute", "Up") + 
+                                  createULJESchain("Absolute_RPLME_YEAR", "Up") + 
+                                  createULJESchain("BBEC1", "Up") + 
+                                  createULJESchain("BBEC1_RPLME_YEAR", "Up") + 
+                                  createULJESchain("EC2", "Up") + 
+                                  createULJESchain("EC2_RPLME_YEAR", "Up") + 
+                                  createULJESchain("FlavorQCD", "Up") + 
+                                  createULJESchain("HF", "Up") + 
+                                  createULJESchain("HF_RPLME_YEAR", "Up") + 
+                                  createULJESchain("RelativeBal", "Up") + 
                                   createULJESchain("RelativeSample_RPLME_YEAR", "Up"),
                   'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts2.txt'
                },
-  'JESdo_suffix' :   {
-                  'isChain'    : True,
-                  'do4MC'      : True,
-                  'do4Data'    : False,
-                  'subTargets' :  createULJESchain("Total", "Do")+\
-                                  createULJESchain("Absolute", "Do")+\
-                                  createULJESchain("Absolute_RPLME_YEAR", "Do")+\
-                                  createULJESchain("BBEC1", "Do")+\
-                                  createULJESchain("BBEC1_RPLME_YEAR", "Do")+\
-                                  createULJESchain("EC2", "Do")+\
-                                  createULJESchain("EC2_RPLME_YEAR", "Do")+\
-                                  createULJESchain("FlavorQCD", "Do")+\
-                                  createULJESchain("HF", "Do")+\
-                                  createULJESchain("HF_RPLME_YEAR", "Do")+\
-                                  createULJESchain("RelativeBal", "Do")+\
+
+   'JESdo_suffix' :   {
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' :  createULJESchain("Total", "Do") +
+                                  createULJESchain("Absolute", "Do") +
+                                  createULJESchain("Absolute_RPLME_YEAR", "Do") +
+                                  createULJESchain("BBEC1", "Do") +
+                                  createULJESchain("BBEC1_RPLME_YEAR", "Do") +
+                                  createULJESchain("EC2", "Do") +
+                                  createULJESchain("EC2_RPLME_YEAR", "Do") +
+                                  createULJESchain("FlavorQCD", "Do") +
+                                  createULJESchain("HF", "Do") +
+                                  createULJESchain("HF_RPLME_YEAR", "Do") +
+                                  createULJESchain("RelativeBal", "Do") +
                                   createULJESchain("RelativeSample_RPLME_YEAR", "Do"),
                   'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts2.txt'
                },
@@ -4910,6 +4745,80 @@ Steps = {
 ###########################################
 ### Split JES steps to have faster jobs ###
 ###########################################
+
+###############
+## pre-UL UP ##
+###############
+#TO BE REMOVED if tested that UL version is backwards compatible
+'''
+   'JESTotalup_suffix' :   {
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' : ['JESBase'] +
+                                  createJESchain("Total", "Up"),
+                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
+               },
+
+   'JESAbsoluteup_suffix' :   {
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' : ['JESBase'] +
+                                  createJESchain("Absolute", "Up") +
+                                  createJESchain("Absolute_RPLME_YEAR", "Up"),
+                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
+               },
+
+   'JESBBEC1up_suffix' :   {
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' : ['JESBase'] +
+                                  createJESchain("BBEC1", "Up") +
+                                  createJESchain("BBEC1_RPLME_YEAR", "Up"),
+                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
+               },
+
+   'JESEC2up_suffix' :   {
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' : ['JESBase'] +
+                                  createJESchain("EC2", "Up") +
+                                  createJESchain("EC2_RPLME_YEAR", "Up"),
+                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
+               },
+
+   'JESFlavorQCDup_suffix' :   {
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' : ['JESBase'] +
+                                  createJESchain("FlavorQCD", "Up"),
+                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
+               },
+
+   'JESHFup_suffix' :   {
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' : ['JESBase'] +
+                                  createJESchain("HF", "Up") +
+                                  createJESchain("HF_RPLME_YEAR", "Up"),
+                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
+               },
+
+   'JESRelativeup_suffix' :   {
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' : ['JESBase'] +
+                                  createJESchain("RelativeBal", "Up") +
+                                  createJESchain("RelativeSample_RPLME_YEAR", "Up"),
+                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
+               },
+'''
 
 ###########
 ## UL UP ##
@@ -4975,7 +4884,80 @@ Steps = {
                                  createULJESchain("RelativeSample_RPLME_YEAR", "Up"),
                   'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts2.txt'
                },
+ 
+###############
+## pre-UL DO ##
+###############
+#TO BE REMOVED if tested that UL version is backwards compatible
+'''
+   'JESTotaldo_suffix' :   {
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' : ['JESBase'] +
+                                  createJESchain("Total", "Do"),
+                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
+               },
 
+   'JESAbsolutedo_suffix' :   {
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' : ['JESBase'] +
+                                  createJESchain("Absolute", "Do") +
+                                  createJESchain("Absolute_RPLME_YEAR", "Do"),
+                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
+               },
+
+   'JESBBEC1do_suffix' :   {
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' : ['JESBase'] +
+                                  createJESchain("BBEC1", "Do") +
+                                  createJESchain("BBEC1_RPLME_YEAR", "Do"),
+                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
+               },
+
+   'JESEC2do_suffix' :   {
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' : ['JESBase'] +
+                                  createJESchain("EC2", "Do") +
+                                  createJESchain("EC2_RPLME_YEAR", "Do"),
+                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
+               },
+
+   'JESFlavorQCDdo_suffix' :   {
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' : ['JESBase'] +
+                                  createJESchain("FlavorQCD", "Do"),
+                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
+               },
+
+   'JESHFdo_suffix' :   {
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' : ['JESBase'] +
+                                  createJESchain("HF", "Do") +
+                                  createJESchain("HF_RPLME_YEAR", "Do"),
+                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
+               },
+
+   'JESRelativedo_suffix' :   {
+                  'isChain'    : True ,
+                  'do4MC'      : True  ,
+                  'do4Data'    : False  ,
+                  'subTargets' : ['JESBase'] +
+                                  createJESchain("RelativeBal", "Do") +
+                                  createJESchain("RelativeSample_RPLME_YEAR", "Do"),
+                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
+               },
+'''
 ###########
 ## UL DO ##
 ###########
@@ -5147,22 +5129,13 @@ Steps = {
                   'subTargets' : ['do_METup','l2Kin', 'l3Kin', 'l4Kin','DYMVA','MonoHiggsMVA','formulasMC'],
                },
 
-## Legacy
-#   'METup_suffix' :   {
-#                  'isChain'    : True ,
-#                  'do4MC'      : True  ,
-#                  'do4Data'    : False  ,
-#                  'subTargets' : ['do_METup_suffix','l2Kin_METup', 'l3Kin_METup', 'l4Kin_METup','DYMVA_METup','MonoHiggsMVA_METup','formulasMC_METup','JJHEFT_METup'] + 
-#                                 [item.replace("JES", "MET") for item in createJESchain("Response", "Up")] + 
-#                                 [item.replace("JES", "MET") for item in createJESchain("Resolution", "Up")],
-#                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
-#               },
-
    'METup_suffix' :   {
                   'isChain'    : True ,
                   'do4MC'      : True  ,
                   'do4Data'    : False  ,
-                  'subTargets' : ['do_METup_suffix','l2Kin_METup', 'l3Kin_METup', 'l4Kin_METup','formulasMC_METup','JJHEFT_METup'], 
+                  'subTargets' : ['do_METup_suffix','l2Kin_METup', 'l3Kin_METup', 'l4Kin_METup','DYMVA_METup','MonoHiggsMVA_METup','formulasMC_METup','JJHEFT_METup'] + 
+                                 [item.replace("JES", "MET") for item in createJESchain("Response", "Up")] + 
+                                 [item.replace("JES", "MET") for item in createJESchain("Resolution", "Up")],
                   'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
                },
 
@@ -5182,23 +5155,13 @@ Steps = {
                   'subTargets' : ['do_METdo','l2Kin', 'l3Kin', 'l4Kin','DYMVA','MonoHiggsMVA','formulasMC'],
                },
 
-## Legacy
-#   'METdo_suffix' :   {
-#                  'isChain'    : True ,
-#                  'do4MC'      : True  ,
-#                  'do4Data'    : False  ,
-#                  'subTargets' : ['do_METdo_suffix','l2Kin_METdo', 'l3Kin_METdo', 'l4Kin_METdo','DYMVA_METdo','MonoHiggsMVA_METdo','formulasMC_METdo','JJHEFT_METdo'] +
-#                                 [item.replace("JES", "MET") for item in createJESchain("Response", "Do")] + 
-#                                 [item.replace("JES", "MET") for item in createJESchain("Resolution", "Do")],
-#                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
-#               },
-
-
    'METdo_suffix' :   {
                   'isChain'    : True ,
                   'do4MC'      : True  ,
                   'do4Data'    : False  ,
-                  'subTargets' : ['do_METdo_suffix','l2Kin_METdo', 'l3Kin_METdo', 'l4Kin_METdo','formulasMC_METdo','JJHEFT_METdo'] ,
+                  'subTargets' : ['do_METdo_suffix','l2Kin_METdo', 'l3Kin_METdo', 'l4Kin_METdo','DYMVA_METdo','MonoHiggsMVA_METdo','formulasMC_METdo','JJHEFT_METdo'] + 
+                                 [item.replace("JES", "MET") for item in createJESchain("Response", "Do")] + 
+                                 [item.replace("JES", "MET") for item in createJESchain("Resolution", "Do")],
                   'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
                },
 
@@ -5273,7 +5236,7 @@ Steps = {
                   'isChain'    : True ,
                   'do4MC'      : True  ,
                   'do4Data'    : False  ,
-                  'subTargets' : ['do_ElepTup_suffix', 'trigMCKeepRun_ElepTup', 'LeptonSF_ElepTup', 'l2Kin_ElepTup', 'l3Kin_ElepTup', 'l4Kin_ElepTup', 'formulasMC_ElepTup', 'JJHEFT_ElepTup'],
+                  'subTargets' : ['do_ElepTup_suffix', 'trigMCKeepRun_ElepTup', 'LeptonSF_ElepTup', 'l2Kin_ElepTup', 'l3Kin_ElepTup', 'l4Kin_ElepTup', 'DYMVA_ElepTup', 'MonoHiggsMVA_ElepTup', 'formulasMC_ElepTup', 'JJHEFT_ElepTup'],
                   'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
                },
 
@@ -5301,23 +5264,13 @@ Steps = {
                   'subTargets' : ['do_ElepTdo','trigMCKeepRun','LeptonSF','l2Kin', 'l3Kin', 'l4Kin','DYMVA','MonoHiggsMVA','formulasMC'],
                 },
  
-#  'ElepTdo_suffix' :   {
-#                  'isChain'    : True ,
-#                  'do4MC'      : True  ,
-#                  'do4Data'    : False  ,
-#                  'subTargets' : ['do_ElepTdo_suffix', 'trigMCKeepRun_ElepTdo', 'LeptonSF_ElepTdo', 'l2Kin_ElepTdo', 'l3Kin_ElepTdo', 'l4Kin_ElepTdo', 'DYMVA_ElepTdo', 'MonoHiggsMVA_ElepTdo', 'formulasMC_ElepTdo', 'JJHEFT_ElepTdo'],
-#                  'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
-#               },
-
-  # Update for UL
   'ElepTdo_suffix' :   {
                   'isChain'    : True ,
                   'do4MC'      : True  ,
                   'do4Data'    : False  ,
-                  'subTargets' : ['do_ElepTdo_suffix', 'trigMCKeepRun_ElepTdo', 'LeptonSF_ElepTdo', 'l2Kin_ElepTdo', 'l3Kin_ElepTdo', 'l4Kin_ElepTdo', 'formulasMC_ElepTdo', 'JJHEFT_ElepTdo'],
+                  'subTargets' : ['do_ElepTdo_suffix', 'trigMCKeepRun_ElepTdo', 'LeptonSF_ElepTdo', 'l2Kin_ElepTdo', 'l3Kin_ElepTdo', 'l4Kin_ElepTdo', 'DYMVA_ElepTdo', 'MonoHiggsMVA_ElepTdo', 'formulasMC_ElepTdo', 'JJHEFT_ElepTdo'],
                   'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
                },
-
   'ElepTdo_suffix_WS' :   {
                   'isChain'    : True ,
                   'do4MC'      : True  ,
@@ -5428,7 +5381,7 @@ Steps = {
                   'isChain'    : True ,
                   'do4MC'      : True  ,
                   'do4Data'    : False  ,
-                  'subTargets' : ['do_MupTup_suffix', 'trigMCKeepRun_MupTup', 'LeptonSF_MupTup', 'l2Kin_MupTup', 'l3Kin_MupTup', 'l4Kin_MupTup', 'formulasMC_MupTup', 'JJHEFT_MupTup'],
+                  'subTargets' : ['do_MupTup_suffix', 'trigMCKeepRun_MupTup', 'LeptonSF_MupTup', 'l2Kin_MupTup', 'l3Kin_MupTup', 'l4Kin_MupTup', 'DYMVA_MupTup', 'MonoHiggsMVA_MupTup', 'formulasMC_MupTup', 'JJHEFT_MupTup'],
                   'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
                },
 
@@ -5451,7 +5404,7 @@ Steps = {
                   'isChain'    : True ,
                   'do4MC'      : True  ,
                   'do4Data'    : False  ,
-                  'subTargets' : ['do_MupTdo_suffix', 'trigMCKeepRun_MupTdo', 'LeptonSF_MupTdo', 'l2Kin_MupTdo', 'l3Kin_MupTdo', 'l4Kin_MupTdo', 'formulasMC_MupTdo', 'JJHEFT_MupTdo'],
+                  'subTargets' : ['do_MupTdo_suffix', 'trigMCKeepRun_MupTdo', 'LeptonSF_MupTdo', 'l2Kin_MupTdo', 'l3Kin_MupTdo', 'l4Kin_MupTdo', 'DYMVA_MupTdo', 'MonoHiggsMVA_MupTdo', 'formulasMC_MupTdo', 'JJHEFT_MupTdo'],
                   'outputbranchsel': os.getenv('CMSSW_BASE') + '/src/LatinoAnalysis/NanoGardener/python/data/keepsysts.txt'
                },
 
@@ -6425,7 +6378,6 @@ Steps = {
 
 }
 Steps.update(addJESchainMembers())
-Steps.update(addJERchainMembers())
 Steps.update(addMETchainMembers())
 Steps.update(addSystChainMembers_CombJJLNu())
 
