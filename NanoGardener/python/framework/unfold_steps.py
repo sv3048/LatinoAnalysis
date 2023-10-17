@@ -1,6 +1,6 @@
 import json
 import sys
-import Steps_cfg as steps
+import python.framework.Steps_cfg_hide as steps
 
 if len(sys.argv)>1:
     output = { k:v for k, v in steps.Steps.items() if sys.argv[1] in k}
