@@ -220,6 +220,9 @@ class LHE_MEMaker(Module):
         
         LHEEvent.constructTopCandidates()
 
+
+      
+
         # Disable tops unmatched to a gen. top
         matchedTops = ROOT.vector('MELATopCandidate_t')()
         for writtenGenTopCand in writtenGenTopCands:
@@ -234,27 +237,36 @@ class LHE_MEMaker(Module):
         LHEEvent.constructVVCandidates(self.VVMode, self.VVDecayMode)
         LHEEvent.addVVCandidateAppendages()
         
-        ThereIsCand = False
+        
+
+        #ThereIsCand = False
+        genCand = None
+        print ("ThereisHiggs=", ThereIsHiggs)
         if ThereIsHiggs:
             for writtenGenCand in writtenGenCands:
                 tmpCand = ROOT.HiggsComparators.matchAHiggsToParticle(LHEEvent, writtenGenCand)
                 if tmpCand:
-                    if not ThereIsCand:
+                    if genCand is None:
                         genCand = tmpCand    
                     else: 
                         genCand = ROOT.HiggsComparators.candComparator(genCand, tmpCand, ROOT.HiggsComparators.BestZ1ThenZ2ScSumPt, self.VVMode);
-        else:
+        if(genCand == None):
             genCand = ROOT.HiggsComparators.candidateSelector(LHEEvent, ROOT.HiggsComparators.BestZ1ThenZ2ScSumPt, self.VVMode);
 
+        print ("LHECandMass", genCand.m())
+       
         # MAKE THE IvyAutoMELA CALL 
-        #print("====================================================0")
-        #ROOT.TUtil.PrintCandidateSummary(genCand)
-        #print("====================================================0")
+        print("====================================================0")
+        ROOT.TUtil.PrintCandidateSummary(genCand)
+        ### print gen Candidate decay mode ###
+        print("genCand_DecayMode", genCand.getDecayMode())
+        print("====================================================0")
         ROOT.IvyMELAHelpers.melaHandle.setCurrentCandidate(genCand)
-
+        #print MelaEvent::printCandidateDecayModeDescriptions()
+        LHEEvent.printCandidateDecayModeDescriptions()
         self.lheMEblock.computeMELABranches()
         
-
+        
         ################# REWEIGHTING STEP ##########################
         # Needed inputs: binning, xsec, BR, gen MC weight, LHE MEs weights
 
@@ -271,6 +283,7 @@ class LHE_MEMaker(Module):
 
         self.out.fillBranch('LHECandMass', genCand.m())
         self.lheMEblock.pushMELABranches()
+        
         
         # CLEAR MELA
 
