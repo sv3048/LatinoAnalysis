@@ -122,18 +122,19 @@ class JJH_EFTVars_OffShell(Module):
          self.mela.setCurrentCandidateFromIndex(0)
 
          ME_VBF = ROOT.melaHiggsEFT(self.mela, ROOT.TVar.JHUGen, ROOT.TVar.JJVBF, 0, 1) 
-         
-         print ('ME_VBF[0]',ME_VBF[0])
+        
+         #print(type(ME_VBF)) 
+         #print ('ME_VBF[0]',ME_VBF[0])
          #print ('ME_VBF[1]',ME_VBF[1])
-         print ('check ME_VBF',ME_VBF)
+         #print ('check ME_VBF',ME_VBF)
 
-         me_qqh_hsm   = ME_VBF[0]
-         print ('me_qqh_hsm', me_qqh_hsm)
+         me_qqh_hsm   = ME_VBF.find("me_hsm").second
+         #print ('me_qqh_hsm', me_qqh_hsm)
         
          ME_QCD = ROOT.melaHiggsEFT(self.mela, ROOT.TVar.JHUGen, ROOT.TVar.JJQCD, 1, 1)
          #me_qcd_hsm = ROOT.melaHiggsEFT_OffShell(self.mela, ROOT.TVar.JHUGen, ROOT.TVar.JJQCD, 1, 1)
-         me_ggh_hsm   = ME_QCD[0]
-         print ('me_ggh_hsm', me_ggh_hsm)
+         me_ggh_hsm   = ME_QCD.find("me_hsm").second
+         #print ('me_ggh_hsm', me_ggh_hsm)
 
          #D2jVBF = 1/(1+(me_ggh_hsm)/(me_qqh_hsm))
          # Calculate D2jVBF with a default value of 0.0 when the denominator is zero
@@ -148,7 +149,7 @@ class JJH_EFTVars_OffShell(Module):
             D2jVBF = -200.0
              
              
-         print ('D2jVBF', D2jVBF)
+         #print ('D2jVBF', D2jVBF)
 
          self.mela.resetInputEvent()
          

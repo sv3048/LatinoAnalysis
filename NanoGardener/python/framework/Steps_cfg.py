@@ -3067,6 +3067,9 @@ Steps = {
                    'isChain'    : False ,
                    'do4MC'      : True ,
                    'do4Data'    : True ,
+                   'selection' : '"(nLepton>=2 && \
+                                   nCleanJet>=2)"',
+                   
                    'import'     : 'LatinoAnalysis.NanoGardener.modules.JJH_EFTVars_OffShell' ,
                    'declare'    : 'JJHEFT_OffShell = lambda : JJH_EFTVars_OffShell()',
                    'module'     : 'JJHEFT_OffShell()',
