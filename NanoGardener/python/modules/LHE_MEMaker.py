@@ -147,7 +147,7 @@ class LHE_MEMaker(Module):
         for partid, part in enumerate(self.LHE):
             temp = ROOT.TLorentzVector()
             if  part.status == 1 : # LHE particle status; -1:incoming, 1:outgoing
-                print (" incomingIDs", part.pdgId)  # check point 
+                print (" OutgoingIDs", part.pdgId)  # check point 
                 temp.SetPtEtaPhiM(part.pt, part.eta, part.phi, part.mass)
                 outgoing.push_back(temp)
                 outgoingIDs.push_back(part.pdgId)
@@ -156,7 +156,7 @@ class LHE_MEMaker(Module):
                 temp.SetPxPyPzE(0.,0., part.incomingpz, abs(part.incomingpz))
                 incoming.push_back(temp)
                 incomingIDs.push_back(part.pdgId)
-                print ("outgoingIDs", part.pdgId)
+                print ("IncomingIDs", part.pdgId)
             else: 
                 print ("neither incoming nor outgoing",part.status, part.pdgId)
                 
@@ -164,8 +164,8 @@ class LHE_MEMaker(Module):
         for partid, part in enumerate(self.Gen):
             temp = ROOT.TLorentzVector()
             if part.pdgId == 25 and (part.status == 3 or (part.status > 20 and   part.status < 30)):
-               
-                print ("incomingIDs_afterGenaddition", part.pdgId)  # check point 
+                
+                print ("OutgoingIDs_afterGenaddition", part.pdgId)  # check point 
                 temp.SetPtEtaPhiM(part.pt, part.eta, part.phi, part.mass)
                 outgoing.push_back(temp)
                 outgoingIDs.push_back(part.pdgId)
