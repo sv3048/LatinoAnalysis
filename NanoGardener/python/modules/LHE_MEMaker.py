@@ -15,7 +15,7 @@ import os.path
 
 class LHE_MEMaker(Module):
     def __init__(self, sample, year, cfg_path, xsecs_path):
-        print '####################', sample
+        #print '####################', sample
         self.sample = sample
         self.year = year
         self.cmssw_base = os.getenv('CMSSW_BASE')
@@ -81,7 +81,7 @@ class LHE_MEMaker(Module):
 
         
         self.VVMode = ROOT.MELAEvent.getCandidateVVModeFromString("WW")
-        print (self.VVMode)  #p1
+        print ("VVmode =",self.VVMode)  #p1
         self.isGen = True
 
         if "GluGluHToWW" in self.sample :
@@ -131,7 +131,7 @@ class LHE_MEMaker(Module):
         #print(event.run, event.luminosityBlock, event.event)
 
         self.LHE = Collection(event,"LHEPart")
-        Gen = Collection(event,"GenPart")
+        self.Gen = Collection(event,"GenPart")
 
         incoming = ROOT.vector('TLorentzVector')()
         incomingIDs = ROOT.vector('int')()
@@ -146,20 +146,29 @@ class LHE_MEMaker(Module):
         
         for partid, part in enumerate(self.LHE):
             temp = ROOT.TLorentzVector()
-            if part.status == 1: # LHE particle status; -1:incoming, 1:outgoing
+            if  part.status == 1 : # LHE particle status; -1:incoming, 1:outgoing
+                print (" incomingIDs", part.pdgId)  # check point 
                 temp.SetPtEtaPhiM(part.pt, part.eta, part.phi, part.mass)
                 outgoing.push_back(temp)
                 outgoingIDs.push_back(part.pdgId)
+        
             elif part.status == -1:
                 temp.SetPxPyPzE(0.,0., part.incomingpz, abs(part.incomingpz))
                 incoming.push_back(temp)
                 incomingIDs.push_back(part.pdgId)
-        
-        print (incomingIDs)
-        print (outgoingIDs)
-
-        daughter_coll = ROOT.SimpleParticleCollection_t() 
-        mother_coll = ROOT.SimpleParticleCollection_t()
+                print ("outgoingIDs", part.pdgId)
+            else: 
+                print ("neither incoming nor outgoing",part.status, part.pdgId)
+                
+        # Loop over only particles with pdgId 25 in self.Gen
+        for partid, part in enumerate(self.Gen):
+            temp = ROOT.TLorentzVector()
+            if part.pdgId == 25 and (part.status == 3 or (part.status > 20 and   part.status < 30)):
+               
+                print ("incomingIDs_afterGenaddition", part.pdgId)  # check point 
+                temp.SetPtEtaPhiM(part.pt, part.eta, part.phi, part.mass)
+                outgoing.push_back(temp)
+                outgoingIDs.push_back(part.pdgId)
 
         for idx, dau in enumerate(outgoing):
          tempPart = ROOT.SimpleParticle_t(outgoingIDs[idx], dau)         
@@ -198,31 +207,41 @@ class LHE_MEMaker(Module):
             else:
                 if ROOT.PDGHelpers.isALepton(part.id):
                     LHEEvent.addLepton(part)
+                    print("ID_Lep: ", part.id)
                 elif ROOT.PDGHelpers.isANeutrino(part.id):
                     LHEEvent.addNeutrino(part)
-                elif ROOT.PDGHelpers.isAKnownJet(part.id) and ROOT.PDGHelpers.isATopQuark(part.id) == False:
+                    print("ID_Nu: ", part.id)
+                #elif ROOT.PDGHelpers.isAKnownJet(part.id) and ROOT.PDGHelpers.isATopQuark(part.id) == False:
+                elif ROOT.PDGHelpers.isAKnownJet(part.id) and not ROOT.PDGHelpers.isATopQuark(part.id):
                     LHEEvent.addJet(part)
+                    print("ID_Jet: ", part.id)
+                ### modifciation or identification in a better way 
+                elif ROOT.PDGHelpers.isAGluon(part.id):
+                    LHEEvent.addJet(part)
+                    print("ID_GluonJet: ", part.id)
+                elif ROOT.PDGHelpers.isATopQuark(part.id):
+                    print("ID_TopQuark: ", part.id)
+                    writtenGenTopCands.push_back(part)
+                    if (part.genStatus==1):
+                        LHEEvent.addIntermediate(part)
+                        print("ID_TopQuark: ", part.id)
+                ##################################################
                 elif ROOT.PDGHelpers.isAPhoton(part.id):
                     LHEEvent.addPhoton(part)
                 elif ROOT.PDGHelpers.isAHiggs(part.id):
+                    print ("isAHiggs_part.id", part.id)
                     writtenGenCands.push_back(part)
                     ThereIsHiggs = True
                     if (self.VVMode==ROOT.MELAEvent.UndecayedMode and (part.genStatus==1 or part.genStatus==2)):
-                        LHEEvent.addIntermediate(part);
-                elif ROOT.PDGHelpers.isATopQuark(part.id):
-                    writtenGenTopCands.push_back(part)
-                    if (part.genStatus==1):
-                        LHEEvent.addIntermediate(part);
+                        LHEEvent.addIntermediate(part)
+                        print ("self.VVMode==ROOT.MELAEvent.UndecayedMode",LHEEvent.UndecayedMode )
                 else:
                     print("FATAL: UNIDENTIFIED PARTICLE IN THE FINAL STATE")
                     print("ID: ", part.id)
-                
-        
+    
+          
+    
         LHEEvent.constructTopCandidates()
-
-
-      
-
         # Disable tops unmatched to a gen. top
         matchedTops = ROOT.vector('MELATopCandidate_t')()
         for writtenGenTopCand in writtenGenTopCands:
@@ -235,6 +254,7 @@ class LHE_MEMaker(Module):
 
 
         LHEEvent.constructVVCandidates(self.VVMode, self.VVDecayMode)
+        print("VVDecaymode",self.VVDecayMode)
         LHEEvent.addVVCandidateAppendages()
         
         
@@ -250,14 +270,16 @@ class LHE_MEMaker(Module):
                         genCand = tmpCand    
                     else: 
                         genCand = ROOT.HiggsComparators.candComparator(genCand, tmpCand, ROOT.HiggsComparators.BestZ1ThenZ2ScSumPt, self.VVMode);
-        if(genCand == None):
-            genCand = ROOT.HiggsComparators.candidateSelector(LHEEvent, ROOT.HiggsComparators.BestZ1ThenZ2ScSumPt, self.VVMode);
+        # fixed this line     
+        if genCand is None:
+            genCand = ROOT.HiggsComparators.candidateSelector(LHEEvent, ROOT.HiggsComparators.BestZ1ThenZ2ScSumPt, self.VVMode)
 
         print ("LHECandMass", genCand.m())
-       
+        print ("VVmode =",self.VVMode)  #p1
         # MAKE THE IvyAutoMELA CALL 
         print("====================================================0")
         ROOT.TUtil.PrintCandidateSummary(genCand)
+        #ROOT.TUtil.PrintCandidateSummary(genCand.getDecayMode())
         ### print gen Candidate decay mode ###
         print("genCand_DecayMode", genCand.getDecayMode())
         print("====================================================0")
