@@ -101,7 +101,7 @@ class LHE_MEMaker(Module):
 
     def endJob(self):
         pass
-
+                                        
     def beginFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         
         self.out = wrappedOutputTree
@@ -202,6 +202,7 @@ class LHE_MEMaker(Module):
         ThereIsHiggs = False
 
         for part in melaParticlesList:
+            print ("all pdgIDs in MELAParticlelist", part.genStatus, part.id )
             if part.genStatus == -1:
                 LHEEvent.addMother(part)
             else:
@@ -232,7 +233,9 @@ class LHE_MEMaker(Module):
                     print ("isAHiggs_part.id", part.id)
                     writtenGenCands.push_back(part)
                     ThereIsHiggs = True
-                    if (self.VVMode==ROOT.MELAEvent.UndecayedMode and (part.genStatus==1 or part.genStatus==2)):
+                    print (ROOT.MELAEvent.UndecayedMode)
+                    print()
+                    if (self.VVMode == ROOT.MELAEvent.UndecayedMode and (part.genStatus==1 or part.genStatus==2)):
                         LHEEvent.addIntermediate(part)
                         print ("self.VVMode==ROOT.MELAEvent.UndecayedMode",LHEEvent.UndecayedMode )
                 else:
@@ -263,17 +266,20 @@ class LHE_MEMaker(Module):
         genCand = None
         print ("ThereisHiggs=", ThereIsHiggs)
         if ThereIsHiggs:
+            print("Entered ThereIsHiggs if condition")
             for writtenGenCand in writtenGenCands:
                 tmpCand = ROOT.HiggsComparators.matchAHiggsToParticle(LHEEvent, writtenGenCand)
                 if tmpCand:
                     if genCand is None:
                         genCand = tmpCand    
                     else: 
-                        genCand = ROOT.HiggsComparators.candComparator(genCand, tmpCand, ROOT.HiggsComparators.BestZ1ThenZ2ScSumPt, self.VVMode);
+                        genCand = ROOT.HiggsComparators.candComparator(genCand, tmpCand, ROOT.HiggsComparators.BestZ1ThenZ2ScSumPt, self.VVMode)
+                        print("tmpCand found and processed in the else statement")
+                    print("tmpCand found and processed")
         # fixed this line     
         if genCand is None:
             genCand = ROOT.HiggsComparators.candidateSelector(LHEEvent, ROOT.HiggsComparators.BestZ1ThenZ2ScSumPt, self.VVMode)
-
+            print("Entered genCand is None if condition")
         print ("LHECandMass", genCand.m())
         print ("VVmode =",self.VVMode)  #p1
         # MAKE THE IvyAutoMELA CALL 
