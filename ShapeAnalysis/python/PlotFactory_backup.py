@@ -191,14 +191,6 @@ class PlotFactory:
             tgrData_evy_up = array('f')
             tgrData_evy_do = array('f')
 
-            #@s-notes: print "signal vx,vy,vz"
-            tgrSignal_vx     = array('f')
-            tgrSignal_evx    = array('f')
-            tgrSignal_vy     = array('f')
-            tgrSignal_evy_up = array('f')
-            tgrSignal_evy_do = array('f')
-
-
             # at least 1 "MC" should be around ... otherwise what are we plotting? Only data?
             tgrMC_vx       = array('f')
             tgrMC_evx      = array('f')
@@ -639,57 +631,9 @@ class PlotFactory:
 
             last = thsBackground.GetStack().Last()
 
-            # Clone the TGraph for Signal/Sqrt(Background)
-            #print "did we reach at SignalOverSqrtBakcground"
-            tgrSignalOverSqrtBkg = tgrData.Clone("tgrSignalOverSqrtBkg")
-
-            # Calculate the ratio for each bin
-            for iBin in range(0, len(tgrData_vx)):
-                # Signal content for the current bin
-                signal_value = thsSignal.GetStack().Last().GetBinContent(iBin + 1)
-                # Background content from the last histogram in the stack
-                background_value = last.GetBinContent(iBin + 1)
-                sqrt_background_value = math.sqrt(background_value)  # Square root of the background
-
-                # Calculate the ratio and set it in the TGraph
-                ratio_value = self.Ratio(signal_value, sqrt_background_value)
-                tgrSignalOverSqrtBkg.SetPoint(iBin, tgrData_vx[iBin], ratio_value)
-
-                # Error calculations
-                signal_error = thsSignal.GetStack().Last().GetBinError(iBin + 1)
-                background_error = last.GetBinError(iBin + 1)
-
-                # Calculate the error for the ratio
-                if signal_value > 0 or sqrt_background_value > 0:  # Avoid division by zero
-                    if background_value > 0:
-                        sqrt_background_error = background_error / (2 * sqrt_background_value)
-                    else:
-                        sqrt_background_error = 0  # If background is zero, no error on sqrt
-
-                    # Only calculate ratio errors if values are non-zero
-                    if signal_value > 0:
-                        ratio_error_low = ratio_value * math.sqrt(
-                            (signal_error / signal_value) ** 2 + (sqrt_background_error / sqrt_background_value) ** 2
-                        )
-                        ratio_error_up = ratio_error_low  # Assuming symmetric errors; adjust if necessary
-                    else:
-                        ratio_error_low = 0
-                        ratio_error_up = 0
-                else:
-                    ratio_error_low = 0
-                    ratio_error_up = 0
-
-                # Set the errors for the point in the TGraph
-                tgrSignalOverSqrtBkg.SetPointError(
-                    iBin, tgrData_evx[iBin], tgrData_evx[iBin], ratio_error_low, ratio_error_up
-    )
-                # Optional: Logging for verification
-                print("Bin", iBin, "Signal =", signal_value, "Sqrt(Background) =", sqrt_background_value, "Ratio =", ratio_value)
-
             tgrDataOverMC = tgrData.Clone("tgrDataOverMC")
             tgrDataMinusMC = tgrData.Clone("tgrDataMinusMC")
             tgrMCSigMinusMCBkg = tgrData.Clone("tgrMCSigMinusMCBkg")  # is like saying "signal"
-
             for iBin in range(0, len(tgrData_vx)) :
               tgrDataOverMC.SetPoint     (iBin, tgrData_vx[iBin], self.Ratio(tgrData_vy[iBin] , last.GetBinContent(iBin+1)) )
               tgrDataOverMC.SetPointError(iBin, tgrData_evx[iBin], tgrData_evx[iBin], self.Ratio(tgrData_evy_do[iBin], last.GetBinContent(iBin+1)) , self.Ratio(tgrData_evy_up[iBin], last.GetBinContent(iBin+1)) )
@@ -699,9 +643,6 @@ class PlotFactory:
                   print "Pre-fit ratio: " + str(self.Ratio(tgrData_vy[iBin] , histoPF.GetBinContent(iBin+1)))
                   print "Post-fit ratio: " + str(self.Ratio(tgrData_vy[iBin] , last.GetBinContent(iBin+1)))
                   print iBin
-
-
-            
               #
               # data - MC :
               #    MC could be background only
@@ -752,7 +693,6 @@ class PlotFactory:
             print '--> histo_total = ', histo_total
             
             #                                  if there is "histo_total" there is no need of explicit nuisances
-            #@s-notes: I need to change this part , for now not as len of nuisnaces is zero and histo_total = None ( so okay for now )
             if len(mynuisances.keys()) != 0 or histo_total!= None:
               tgrMC = ROOT.TGraphAsymmErrors()  
               for iBin in range(0, len(tgrMC_vx)) :
@@ -850,10 +790,6 @@ class PlotFactory:
                   
             if thsData.GetNhists() != 0:
               print " DATA = ", thsData.GetStack().Last().Integral()
-
-            #@s-note #fix it !
-            if thsBackground.GetNhists() != 0:
-              print " Signal   = ", thsSignal.GetStack().Last().Integral()
                
              
                          
@@ -1254,9 +1190,6 @@ class PlotFactory:
                 hist.Draw("hist same")
 
             #     - then the DATA  
-            # if tgrData.GetN() != 0:
-            #   tgrData.Draw("P0")
-            #@s-note: add something here ?
             if tgrData.GetN() != 0:
               tgrData.Draw("P0")
     
@@ -1302,59 +1235,23 @@ class PlotFactory:
             #print " pad2 = ", pad2
             # style from https://ghm.web.cern.ch/ghm/plots/MacroExample/myMacro.py
             xAxisDistro = frameRatio.GetXaxis()
-            #xAxisDistro.SetNdivisions(6,5,0)
+            xAxisDistro.SetNdivisions(6,5,0)
 
             if 'xaxis' in variable.keys() : 
               frameRatio.GetXaxis().SetTitle(variable['xaxis'])
             else :
               frameRatio.GetXaxis().SetTitle(variableName)
-            #frameRatio.GetYaxis().SetTitle("Data/Expected")
+            frameRatio.GetYaxis().SetTitle("Data/Expected")
             print("yes we just printed Data/Expected at line 1246 without weight")
             #frameRatio.GetYaxis().SetTitle("Data/MC")
-            frameRatio.GetYaxis().SetTitle("S/sqrt(B)") #fix: fix about MC is b or s+b need to be added later(anyway first just try to plot s/b, s/s+b)
-
             #frameRatio.GetYaxis().SetRangeUser( 0.0, 2.0 )
-            #frameRatio.GetYaxis().SetRangeUser( 0.5, 1.5 )
-            frameRatio.GetYaxis().SetRangeUser(0.0001,1)
-
-            print ("'are we at frameRatio.SetRangeUser?")
-            pad2.SetLogy()  #set it as in few plots its too low
+            frameRatio.GetYaxis().SetRangeUser( 0.5, 1.5 )
             self.Pad2TAxis(frameRatio)
             #                               if there is "histo_total" there is no need of explicit nuisances
             if len(mynuisances.keys()) != 0 or histo_total!= None:
               tgrMCOverMC.Draw("2") 
-            #@s-note: In place of plotting tgrDataOverMC plot tgrSigOverMC
-            #tgrDataOverMC.Draw("P0")
-            #tgrDataOverMC.Draw("P0")
-            tgrSignalOverSqrtBkg.SetMarkerColor(ROOT.kRed)
-            tgrSignalOverSqrtBkg.Draw("P0")
             
-            #@s-notes2: adding overlay plot for tgrSigOverSqrtBkg ( Later try to update it rather than overalaying you can add it as other functionality)
-            #@s-notes: For now this is the first test ( then update it and add only signal over MC plot)
-            # Draw a grid for better visualization
-            # pad2.SetGrid()
-
-            # # Now draw Signal / sqrt(Background)
-            # tgrSignalOverSqrtBkg.SetMarkerStyle(21)  # Set different marker style
-            # tgrSignalOverSqrtBkg.SetMarkerColor(ROOT.kRed)  # Set marker color for Signal/Sqrt(Bkg)
-            # tgrSignalOverSqrtBkg.SetLineColor(ROOT.kRed)  # Set line color for Signal/Sqrt(Bkg)
-
-            # # Overlay the Signal/Sqrt(Background) plot
-            # tgrSignalOverSqrtBkg.Draw("P SAME")  # "P" for points, "SAME" to overlay on the same pad
-
-  
-            
-
-
-
-
-
-
-
-
-
-
-
+            tgrDataOverMC.Draw("P0")
             
             
             if self._postFit == 'p' or self._postFit == 's' or  self._postFit == 'b':
