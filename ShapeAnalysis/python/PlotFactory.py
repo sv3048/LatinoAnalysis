@@ -190,14 +190,7 @@ class PlotFactory:
             tgrData_vy     = array('f')
             tgrData_evy_up = array('f')
             tgrData_evy_do = array('f')
-
-            #@s-notes: print "signal vx,vy,vz"
-            tgrSignal_vx     = array('f')
-            tgrSignal_evx    = array('f')
-            tgrSignal_vy     = array('f')
-            tgrSignal_evy_up = array('f')
-            tgrSignal_evy_do = array('f')
-
+            
 
             # at least 1 "MC" should be around ... otherwise what are we plotting? Only data?
             tgrMC_vx       = array('f')
@@ -683,7 +676,7 @@ class PlotFactory:
                 tgrSignalOverSqrtBkg.SetPointError(
                     iBin, tgrData_evx[iBin], tgrData_evx[iBin], ratio_error_low, ratio_error_up
     )
-                # Optional: Logging for verification
+                #Logging for verification
                 print("Bin", iBin, "Signal =", signal_value, "Sqrt(Background) =", sqrt_background_value, "Ratio =", ratio_value)
 
             tgrDataOverMC = tgrData.Clone("tgrDataOverMC")
@@ -1309,7 +1302,7 @@ class PlotFactory:
             else :
               frameRatio.GetXaxis().SetTitle(variableName)
             #frameRatio.GetYaxis().SetTitle("Data/Expected")
-            print("yes we just printed Data/Expected at line 1246 without weight")
+            print("yes we just printed Data/Expected at line 1246 ")
             #frameRatio.GetYaxis().SetTitle("Data/MC")
             frameRatio.GetYaxis().SetTitle("S/sqrt(B)") #fix: fix about MC is b or s+b need to be added later(anyway first just try to plot s/b, s/s+b)
 
@@ -2282,7 +2275,7 @@ class PlotFactory:
                     else :
                       weight_X_frameRatio.GetXaxis().SetTitle(variableName)
                     weight_X_frameRatio.GetYaxis().SetTitle("Data/Expected")
-                    print("yes we just printed Data/Expected at line 2180 with weight")
+                    print("yes we just printed Data/Expected at line 2180 ")
                     weight_X_frameRatio.GetYaxis().SetRangeUser( 0.5, 1.5 )
                     self.Pad2TAxis(weight_X_frameRatio)
                     
